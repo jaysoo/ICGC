@@ -1,5 +1,5 @@
 <#include "base.ftl">
 <#macro page_content>
-	Hello ${user.name}!
+	Hello World!
 </#macro>
 <@page_html/>
