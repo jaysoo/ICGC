@@ -1,3 +1,7 @@
+<#macro extra_head></#macro> 
+<#macro page_content></#macro> 
+<#macro extra_body></#macro> 
+<#macro page_html> 
 <!doctype html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
@@ -10,15 +14,12 @@
   <title>Data Portal</title>
   <meta name="author" content="Jack Hsu">
 
-  <link rel="stylesheet" href="assets/css/bootstrap.css">
-  <link rel="stylesheet" href="assets/css/bootstrap-responsive.css">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <#include "_head.ftl"> 
 
-  <script src="assets/js/lib/modernizr-2.5.2.js"></script>
+  <@extra_head/>
 </head>
 
 <body>
-
   <header class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid">
@@ -41,23 +42,17 @@
   <div id="main">
     <div class="container-fluid">
       <div class="content">
-        Hello World
+        <@page_content/>
       </div>
     </div>
   </div>
 
-  <footer class="page-footer">
-    <div class="container-fluid">
-      &copy; 2012 Ontario Institute for Cancer Research
-    </div>
-  </footer>
+  <#include "_footer.ftl">
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="assets/js/lib/jquery-1.7.1.min.js"><\/script>')</script>
-
-  <script defer src="assets/js/plugins.js"></script>
-  <script defer src="assets/js/script.js"></script>
+  <#include "_extra_body.ftl">
+  <@extra_body/>
 </body>
 </html>
 
+</#macro> <#-- END: page_html -->
 

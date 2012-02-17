@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.resthub</groupId>
-  <artifactId>todo</artifactId>
+  <groupId>icgc</groupId>
+  <artifactId>dcc</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>Todo</name>
+  <name>ICGC Data Portal</name>
 
   <properties>
     <spring.version>3.1.0.RELEASE</spring.version>
@@ -71,18 +71,16 @@
       <artifactId>cglib-nodep</artifactId>
       <version>2.2</version>
     </dependency>
-
+    
     <dependency>
-      <groupId>com.github.spullara.mustache.java</groupId>
-      <artifactId>mustache.java</artifactId>
-      <version>0.6.3-SNAPSHOT</version>
-      <type>pom</type>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <version>2.3.18</version>
     </dependency>
-
   </dependencies>
 
   <build>
-    <finalName>todo</finalName>
+    <finalName>dcc</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -117,6 +115,9 @@
         <version>8.1.0.RC2</version>
         <configuration>
           <scanIntervalSeconds>0</scanIntervalSeconds>
+          <webAppConfig>
+            <defaultsDescriptor>src/main/resources/webdefault.xml</defaultsDescriptor>
+          </webAppConfig>
         </configuration>
       </plugin>
 
