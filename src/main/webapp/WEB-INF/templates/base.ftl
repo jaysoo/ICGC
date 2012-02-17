@@ -11,8 +11,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>Data Portal</title>
-  <meta name="author" content="Jack Hsu">
+  <title>${SITE_NAME}</title>
 
   <#include "_head.ftl"> 
 
@@ -20,24 +19,7 @@
 </head>
 
 <body>
-  <header class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container-fluid">
-        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </a>
-        <a class="brand" href="#">DCC</a>
-        <nav class="nav-collapse">
-          <ul class="nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-          </ul>
-        </nav>
-      </div>
-    </div>
-  </header>
+  <#include "_navigation.ftl">
 
   <div id="main">
     <div class="container-fluid">

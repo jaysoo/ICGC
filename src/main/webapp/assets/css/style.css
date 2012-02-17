@@ -1,15 +1,5 @@
 body {
-  padding-top: 40px;
-  background-color: #333;
+  padding-top: 60px;
+  padding-bottom: 40px;
 }
 
-#main {
-  background-color: #eee;
-  padding: 10px 0;
-}
-
-.page-footer {
-  color: #eee;
-  background-color: #333;
-  padding: 10px 0;
-}

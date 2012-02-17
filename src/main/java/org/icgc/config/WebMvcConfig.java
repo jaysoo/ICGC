@@ -1,11 +1,15 @@
 package org.icgc.config;
 
+import javax.inject.Inject;
+import org.icgc.SettingsInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -16,6 +20,14 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 @EnableWebMvc
 @ComponentScan(basePackages = "org.icgc", excludeFilters = { @Filter(Configuration.class) })
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
+
+    @Inject
+    private ConfigurableEnvironment env;
+
+    @Bean
+    public SettingsInterceptor settingsInterceptor() {
+        return new SettingsInterceptor(env);
+    }
 
     @Bean
     public FreeMarkerConfigurer freeMarkerConfigurer() {
@@ -34,6 +46,11 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         viewResolver.setOrder(0);
 
         return viewResolver;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(settingsInterceptor());
     }
 
     @Override

@@ -24,7 +24,8 @@ public class PageController {
     public ModelAndView page(@PathVariable String page) {
         ModelAndView mv = new ModelAndView();
 
-        mv.addObject("ASSETS_URL", env.getProperty("assets.url")).setViewName(page);
+        mv.addObject("ASSETS_URL", env.getProperty("assets.url")).addObject("SITE_URL", env.getProperty("site.url"))
+                .addObject("SITE_NAME", env.getProperty("site.name")).setViewName(page);
 
         return mv;
     }
