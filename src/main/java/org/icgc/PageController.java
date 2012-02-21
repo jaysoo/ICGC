@@ -1,9 +1,11 @@
 package org.icgc;
 
+import static org.icgc.SearchUtils.toStringContent;
 import java.security.Principal;
 import java.util.Locale;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,12 +24,29 @@ public class PageController {
     private Environment env;
 
     @Inject
+    private DocumentRepository repo;
+
+    @Inject
     private ViewResolver viewResolver;
+
+    @Inject
+    @Qualifier("facets")
+    private String facets;
+
+    @Inject
+    @Qualifier("query")
+    private String query;
+
+    public static final String MATCH_ALL = "{ \"match_all\": {} }";
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request, Locale locale, Principal principal)
             throws NoSuchRequestHandlingMethodException {
-        return page("index", request, locale, principal);
+        String json = String.format(query, MATCH_ALL, facets);
+        return page("index", request, locale, principal)
+                .addObject("query", query)
+                .addObject("queryFacets", facets)
+                .addObject("documents", toStringContent(repo.search(json)));
     }
 
     @RequestMapping(value = "{page}", method = RequestMethod.GET)

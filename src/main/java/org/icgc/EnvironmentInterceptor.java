@@ -20,7 +20,10 @@ public class EnvironmentInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView mv)
             throws Exception {
 
-        mv.addObject("ASSETS_URL", env.getProperty("assets.url")).addObject("SITE_URL", env.getProperty("site.url"))
-                .addObject("SITE_NAME", env.getProperty("site.name"));
+        mv
+                .addObject("ASSETS_URL", env.getProperty("assets.url"))
+                .addObject("SITE_URL", env.getProperty("site.url"))
+                .addObject("SITE_NAME", env.getProperty("site.name"))
+                .addObject("HIDDEN", "style=\"display:none\"");
     }
 }
