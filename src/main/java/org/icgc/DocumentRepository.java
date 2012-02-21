@@ -1,18 +1,13 @@
 package org.icgc;
 
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.queryString;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import javax.inject.Inject;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.action.search.SearchRequestBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHitField;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,45 +18,34 @@ public final class DocumentRepository {
     @Inject
     private Client client;
 
-    public List<Map<String, Object>> searchSources(String qs, int size, int from, String... indices) {
-
-        List<Map<String, Object>> sources = new ArrayList<Map<String, Object>>();
-
-        SearchResponse response = response(query(qs, prepare(size, from, indices)));
-
-        for (SearchHit hit : response.getHits())
-            sources.add(hit.getSource());
-
-        return sources;
+    /*
+     * Performs a serach using a SearchRequest object.
+     */
+    public SearchResponse search(SearchRequest request) {
+        return client.search(request).actionGet();
     }
 
-    public List<Map<String, Object>> searchFields(String[] fields, String qs, int size, int from, String... indices) {
-
-        List<Map<String, Object>> documents = new ArrayList<Map<String, Object>>();
-
-        SearchResponse response = response(fields(fields, query(qs, prepare(size, from, indices))));
-
-        for (SearchHit hit : response.getHits()) {
-            Map<String, Object> map = new LinkedHashMap<String, Object>();
-            for (Entry<String, SearchHitField> entry : hit.getFields().entrySet()) {
-                map.put(entry.getValue().name(), entry.getValue().value());
-            }
-        }
-
-        return documents;
+    /*
+     * Performs a search using a JSON string. Will convert string to SearchRequest object.
+     */
+    public SearchResponse search(String json) {
+        return search(new SearchRequest().source(json));
     }
 
-    public List<String> searchIds(String qs, int size, int from, String... indices) {
+    public SearchResponse searchAll(int size, int from, String... indices) {
+        return response(all(prepare(size, from, indices)));
+    }
 
-        List<String> sources = new ArrayList<String>();
+    public SearchResponse searchSources(String qs, int size, int from, String... indices) {
+        return response(query(qs, prepare(size, from, indices)));
+    }
 
-        // Perform a field search with no fields, which will not return fields nor sources
-        SearchResponse response = response(fields(EMPTY_FIELDS, query(qs, prepare(size, from, indices))));
+    public SearchResponse searchFields(String[] fields, String qs, int size, int from, String... indices) {
+        return response(fields(fields, query(qs, prepare(size, from, indices))));
+    }
 
-        for (SearchHit hit : response.getHits())
-            sources.add(hit.getId());
-
-        return sources;
+    public SearchResponse searchIds(String qs, int size, int from, String... indices) {
+        return response(fields(EMPTY_FIELDS, query(qs, prepare(size, from, indices))));
     }
 
     // ~ Helper builder methods ==============================================================================
@@ -69,6 +53,10 @@ public final class DocumentRepository {
         return client.prepareSearch(indices)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setFrom(from).setSize(size);
+    }
+
+    private SearchRequestBuilder all(SearchRequestBuilder builder) {
+        return builder.setQuery(matchAllQuery());
     }
 
     private SearchRequestBuilder query(String qs, SearchRequestBuilder builder) {
