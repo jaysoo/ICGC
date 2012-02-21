@@ -8,6 +8,7 @@ import org.icgc.config.WebMvcConfig;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
 public class DccInitializer implements WebApplicationInitializer {
@@ -26,6 +27,10 @@ public class DccInitializer implements WebApplicationInitializer {
             env.setActiveProfiles("development");
 
         dispatcherContext.register(ProductionConfig.class, DevelopmentConfig.class, WebMvcConfig.class);
+
+        // Secures the application
+        servletContext.addFilter("securityFilter", new DelegatingFilterProxy("springSecurityFilterChain"))
+                .addMappingForUrlPatterns(null, false, "/*");
 
         // Register and map the servlet dispatcher
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(

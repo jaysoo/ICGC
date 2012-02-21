@@ -1,18 +1,20 @@
 package org.icgc.config;
 
 import javax.inject.Inject;
-import org.icgc.SettingsInterceptor;
+import org.icgc.EnvironmentInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
@@ -24,9 +26,11 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Inject
     private ConfigurableEnvironment env;
 
+    // ~ Beans ===============================================================================================
+
     @Bean
-    public SettingsInterceptor settingsInterceptor() {
-        return new SettingsInterceptor(env);
+    public EnvironmentInterceptor environmentInterceptor() {
+        return new EnvironmentInterceptor(env);
     }
 
     @Bean
@@ -48,9 +52,16 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         return viewResolver;
     }
 
+    @Bean
+    public LocaleResolver localeResolver() {
+        return new AcceptHeaderLocaleResolver();
+    }
+
+    // ~ Overrides ===========================================================================================
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(settingsInterceptor());
+        registry.addInterceptor(environmentInterceptor()).addPathPatterns("/web/*");
     }
 
     @Override

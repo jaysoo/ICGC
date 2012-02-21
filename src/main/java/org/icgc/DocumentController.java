@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/api/search")
+@RequestMapping("api/search")
 public class DocumentController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody

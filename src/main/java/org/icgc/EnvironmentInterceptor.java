@@ -7,12 +7,12 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-public class SettingsInterceptor extends HandlerInterceptorAdapter {
+public class EnvironmentInterceptor extends HandlerInterceptorAdapter {
 
     private final ConfigurableEnvironment env;
 
     @Inject
-    public SettingsInterceptor(ConfigurableEnvironment env) {
+    public EnvironmentInterceptor(ConfigurableEnvironment env) {
         this.env = env;
     }
 
