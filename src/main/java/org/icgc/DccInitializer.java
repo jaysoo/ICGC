@@ -3,6 +3,7 @@ package org.icgc;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import org.icgc.config.DevelopmentConfig;
+import org.icgc.config.ElasticsearchConfig;
 import org.icgc.config.ProductionConfig;
 import org.icgc.config.WebMvcConfig;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -25,7 +26,8 @@ public class DccInitializer implements WebApplicationInitializer {
         else
             env.setActiveProfiles("development");
 
-        dispatcherContext.register(ProductionConfig.class, DevelopmentConfig.class, WebMvcConfig.class);
+        dispatcherContext.register(ProductionConfig.class, DevelopmentConfig.class, ElasticsearchConfig.class,
+                WebMvcConfig.class);
 
         // Register and map the servlet dispatcher
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(
