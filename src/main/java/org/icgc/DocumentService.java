@@ -1,13 +1,18 @@
 package org.icgc;
 
-import org.springframework.stereotype.Controller;
+import javax.inject.Inject;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
+@Service
 @RequestMapping("api/search")
-public class DocumentController {
+public class DocumentService {
+
+    @Inject
+    private DocumentRepository repo;
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String findAll() {

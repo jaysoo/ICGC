@@ -12,6 +12,7 @@
   <properties>
     <spring.version>3.1.0.RELEASE</spring.version>
     <guava.version>11.0</guava.version>
+    <elasticsearch.version>0.18.7</elasticsearch.version>
   </properties>
   
   <dependencies>
@@ -19,30 +20,6 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
- 
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
- 
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-config</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
- 
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-openid</artifactId>
       <version>${spring.version}</version>
     </dependency>
 
@@ -56,6 +33,12 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>4.2.0.Final</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>${elasticsearch.version}</version>
     </dependency>
 
     <dependency>
