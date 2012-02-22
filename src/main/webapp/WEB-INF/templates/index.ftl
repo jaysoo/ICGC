@@ -2,9 +2,9 @@
 
 <#macro subnav>
 	<div class="subnav" id="subnav">
-		<form id="search" class="pull-left">
-			<input id="q" name="q" type="text" class="input-xxlarge search-query" placeholder="Search">
-			<i title="clear search" class="close">&times;</i>
+		<form id="search">
+			<input id="q" name="q" type="text" class="pull-left input-xxlarge search-query" placeholder="Search">
+			<i title="clear search" class="close pull-left">&times;</i>
 		</form>
 		<div id="stats" class="pull-right"></div>
 	</div>
@@ -43,7 +43,7 @@
 		DCC.queryFacets = ${queryFacets};
 
 		DCC.Documents = new Document.Models.Documents(DCC.hits(initialDocuments));
-		DCC.Search = new Search.Models.Search({ count: initialDocuments.hits.total} );
+		DCC.Search = new Search.Models.Search({ size: ${size}, count: initialDocuments.hits.total} );
 		DCC.Facets = new Facet.Models.Facets(DCC.facets(initialDocuments));
 
 		// Initialize main application view

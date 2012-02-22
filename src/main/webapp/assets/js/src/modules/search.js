@@ -5,7 +5,7 @@
 Search.Models.Search = Backbone.Model.extend({
     defaults: {
         count: 0,
-        size: 20,
+        size: 10,
         from: 0,
         queryString: null
     }

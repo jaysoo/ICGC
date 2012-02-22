@@ -37,14 +37,19 @@ public class PageController {
     @Qualifier("query")
     private String query;
 
+    @Inject
+    @Qualifier("size")
+    private Integer size;
+
     public static final String MATCH_ALL = "{ \"match_all\": {} }";
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request, Locale locale, Principal principal)
             throws NoSuchRequestHandlingMethodException {
-        String json = String.format(query, MATCH_ALL, facets);
+        String json = String.format(query, size, MATCH_ALL, facets);
         return page("index", request, locale, principal)
                 .addObject("query", query)
+                .addObject("size", size)
                 .addObject("queryFacets", facets)
                 .addObject("documents", toStringContent(repo.search(json)));
     }

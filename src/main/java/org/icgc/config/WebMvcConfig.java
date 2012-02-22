@@ -45,6 +45,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
+    @Qualifier("size")
+    public Integer size() {
+        return 10;
+    }
+
+    @Bean
     public ViewResolver freeMarkerViewResolver() {
         FreeMarkerViewResolver viewResolver = new FreeMarkerViewResolver();
 
