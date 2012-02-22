@@ -71,7 +71,6 @@ Search.Views.SearchView = Backbone.View.extend({
                 : this.matchAll,
             payload = { query: {}, facets: this._queryFacets };
 
-        // Build "and" filters
         this.collection.each(function(model) {
             filters = filters.concat(model.filters());
         });

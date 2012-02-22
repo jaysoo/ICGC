@@ -86,7 +86,7 @@ Facet.Views.FacetView = Backbone.View.extend({
         } else {
             this.$(':checked').each(function() {
                 var value = that.getValue( $(this).closest('li') );
-                if (value != '_all' && !_.isEmpty(value)) {
+                if (value != '_all') {
                     values.push( value );
                 }
             });
