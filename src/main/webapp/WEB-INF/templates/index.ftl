@@ -3,7 +3,7 @@
 <#macro subnav>
 	<div class="subnav" id="subnav">
 		<form id="search" class="pull-left">
-			<input id="q" name="q" type="text" class="input-large search-query" placeholder="Search">
+			<input id="q" name="q" type="text" class="input-xxlarge search-query" placeholder="Search">
 		</form>
 		<div id="stats" class="pull-right"></div>
 	</div>
