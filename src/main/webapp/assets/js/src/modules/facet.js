@@ -29,6 +29,18 @@ Facet.Models.Facet = Backbone.Model.extend({
                 arr.push({ terms: field });
             })();
             break;
+
+        case 'range':
+            var ranges = [];
+            _.each(values, function(value) {
+                var range = {};
+                range[that.id] = _.extend({}, value);
+                ranges.push({
+                    range: range
+                });
+            });
+            return [ { or : ranges } ];
+            break;
         }
 
         return arr;
@@ -49,6 +61,7 @@ Facet.Views.FacetView = Backbone.View.extend({
     },
 
     initialize: function() {
+        _.bindAll(this, 'getValue');
     },
 
     render: function() {
@@ -64,16 +77,18 @@ Facet.Views.FacetView = Backbone.View.extend({
     },
 
     onChange: function(ev) {
-        var values = [],
+        var that = this,
+            values = [],
             $target = $(ev.target);
 
         if ($target.data('action') == 'clear') {
             this.clear();
         } else {
             this.$(':checked').each(function() {
-                var value = $(this).closest('li').data('value');
-                if (value != '_all')
+                var value = that.getValue( $(this).closest('li') );
+                if (value != '_all' && !_.isEmpty(value)) {
                     values.push( value );
+                }
             });
 
             if (!values.length) {
@@ -83,6 +98,19 @@ Facet.Views.FacetView = Backbone.View.extend({
                 this.model.set({ values: values });
                 this.$('li[data-value=_all] input')[0].checked = false;
             }
+        }
+    },
+
+    getValue: function($li) {
+        switch (this.model.get('_type')) {
+        case 'terms':
+            return $li.data('value');
+        case 'range':
+            var from = $li.data('from'),
+                to = $li.data('to'),
+                range ={ from: from };
+            to && ( range.to = to );
+            return range;
         }
     },
 

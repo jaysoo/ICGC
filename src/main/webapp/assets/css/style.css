@@ -18,6 +18,9 @@ small {
   height: 300px;
   overflow: auto;
 }
+#application h4 > .additional {
+  font-size: 85%;
+}
 
 #facets ul {
   list-style: none;

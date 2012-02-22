@@ -33,7 +33,8 @@ Document.Views.DocumentView = Backbone.View.extend({
 
         this.$el.html( ich.documentTmpl({
             id: this.model.id,
-            attributes: attrs
+            attributes: attrs,
+            additional: 'test'
         }) );
 
         this.$('.show-more').tooltip({ placement: 'right' });

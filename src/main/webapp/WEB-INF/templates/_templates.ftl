@@ -1,5 +1,10 @@
 <script type="text/html" id="documentTmpl">
-<h4><a title="toggle details" class="show-more" href="javascript:void(0)">{{ id }}</a></h4>
+<h4>
+	<a title="toggle details" class="show-more" href="javascript:void(0)">{{ id }}</a>
+{{#additional}}
+	<small class="additional">({{additional}})</small>
+{{/additional}}
+</h4>
 <dl class="more well" ${HIDDEN}>
 {{#attributes}}
 	<dt>{{name}}</dt>
@@ -36,11 +41,11 @@
 <li data-value="_all">
 	<label for="{{id}}__all" class="term checkbox inline">
 		All {{id}}
-		<input id="{{id}}__all" type="checkbox" checked="checked"/>
+		<input id="{{id}}__all" type="checkbox" checked="checked" data-action="clear"/>
 	</label>
 </li>
 {{#ranges}}
-<li data-value="{{term}}">
+<li data-to="{{to}}" data-from="{{from}}">
 	<label for="{{id}}_{{from}}_{{to}}" class="term checkbox inline">
 		{{#from}}
 			{{#to}}
