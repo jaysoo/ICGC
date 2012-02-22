@@ -45,7 +45,7 @@ Facet.Views.FacetView = Backbone.View.extend({
     tagName: 'li',
 
     events: {
-        'change :checkbox': '_onChange'
+        'change :checkbox': 'onChange'
     },
 
     initialize: function() {
@@ -63,7 +63,7 @@ Facet.Views.FacetView = Backbone.View.extend({
         return this;
     },
 
-    _onChange: function(ev) {
+    onChange: function(ev) {
         var values = [],
             $target = $(ev.target);
 
@@ -88,10 +88,10 @@ Facet.Views.FacetView = Backbone.View.extend({
 
     clear: function() {
        var that = this;
-        this.model.set({ values: null });
         this.$('li :checkbox').each(function() {
             this.checked = $(this).data('action') == 'clear';
         });
+        this.model.set({ values: null });
     }
 });
 
@@ -100,7 +100,7 @@ Facet.Views.FacetsView = Backbone.View.extend({
 
     initialize: function() {
         _.bindAll(this, 'render');
-        this.collection.bind('reset', this.render);
+        this.collection.on('reset', this.render);
     },
 
     subViews: {},
@@ -114,10 +114,10 @@ Facet.Views.FacetsView = Backbone.View.extend({
         this.subViews = {};
 
         this.collection.each(function(model) {
-            that.subViews[model.id] = new Facet.Views.FacetView({
+            var view = that.subViews[model.id] = new Facet.Views.FacetView({
                 model: model
             }).render();
-            that.subViews[model.id].$el.appendTo(that.el);
+            view.$el.appendTo(that.el);
         });
 
         return this;
