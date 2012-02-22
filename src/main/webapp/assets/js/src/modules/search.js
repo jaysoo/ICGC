@@ -6,7 +6,8 @@ Search.Models.Search = Backbone.Model.extend({
     defaults: {
         count: 0,
         size: 20,
-        from: 0
+        from: 0,
+        queryString: null
     }
 });
 
@@ -21,14 +22,16 @@ Search.Views.SearchView = Backbone.View.extend({
 
     matchAll: { match_all: {} },
 
-    queryString: null,
+    areFacetsDirty: false,
 
     initialize: function(options) {
         options = options || {};
 
-        _.bindAll(this, 'search');
+        _.bindAll(this, 'search', 'updateQueryString');
         this.collection.on('change:values', this.search);
-        this.model.on('change', this.search);
+        this.model
+            .on('change:queryString', this.updateQueryString)
+            .on('change', this.search);
 
         this._queryString = options.queryString;
         this._queryFacets = options.queryFacets;
@@ -42,24 +45,29 @@ Search.Views.SearchView = Backbone.View.extend({
         var that = this,
             qs = this.$q.val();
 
-        this.queryString = qs || null;
+        // Need to reload facets
+        this.areFacetsDirty = true;
 
-        this.search();
+        this.model.set({ queryString: qs || null });
 
         return false;
     },
 
     clear: function() {
-        this.$q.val('');
-        this.queryString = null;
-        this.search();
+        // Need to reload facets
+        this.areFacetsDirty = true;
+        this.model.set({ queryString: null });
     },
 
-    search: function() {
+    updateQueryString: function(model, value) {
+        this.$q.val(value || '');
+    },
+
+    search: function(model, values, resetFacets) {
         var that = this,
             filters = [],
-            query = this.queryString
-                ? { query_string: { query: this.queryString } } 
+            query = this.model.get('queryString')
+                ? { query_string: { query: this.model.get('queryString') } } 
                 : this.matchAll,
             payload = { query: {}, facets: this._queryFacets };
 
@@ -98,7 +106,12 @@ Search.Views.SearchView = Backbone.View.extend({
                 success: function(response) {
                     var hits = DCC.hits(response),
                         facets = DCC.facets(response);
-                    DCC.Facets.reset(facets);
+
+                    if (that.areFacetsDirty) {
+                        DCC.Facets.reset(facets);
+                        that.areFacetsDirty = false;
+                    }
+
                     DCC.Documents.reset(hits);
                     that.model.set({ count: response.hits.total });
                 }
