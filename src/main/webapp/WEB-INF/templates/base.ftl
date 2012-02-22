@@ -1,5 +1,6 @@
 <#macro extra_head></#macro> 
 <#macro page_content></#macro> 
+<#macro subnav></#macro> 
 <#macro extra_body></#macro> 
 <#macro page_html> 
 <!doctype html>
@@ -23,6 +24,7 @@
 
   <div id="main">
     <div class="container-fluid">
+			<@subnav/>
       <div class="content">
         <@page_content/>
       </div>

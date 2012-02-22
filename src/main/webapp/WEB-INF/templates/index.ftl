@@ -1,10 +1,17 @@
 <#include "base.ftl">
+
+<#macro subnav>
+	<div class="subnav" id="subnav">
+		<form id="search" class="pull-left">
+			<input id="q" name="q" type="text" class="input-large search-query" placeholder="Search">
+		</form>
+		<div id="stats" class="pull-right"></div>
+	</div>
+</#macro>
+
 <#macro page_content>
 	<div class="row-fluid">
 		<aside class="span4" id="sidebar">
-			<form id="search" class="form-search" action="/api/search/" method="GET">
-				<input id="q" name="q" type="text" class="input-large search-query" placeholder="Search">
-			</form>
 			<div class="well" id="facets">
 			</div>
 		</aside>

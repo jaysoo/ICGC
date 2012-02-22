@@ -67,7 +67,7 @@ DCC.SidebarView = Backbone.View.extend({
     },
 
     render: function() {
-        this.facets.render().$el.appendTo(this.$('#facets'));
+        this.facets.render().$el.appendTo( $('#facets') );
     },
 
     resetSearch: function() {
@@ -76,12 +76,29 @@ DCC.SidebarView = Backbone.View.extend({
 });
 
 DCC.MainView = Backbone.View.extend({
+    initialize: function() {
+        _.bindAll(this, 'updatePosition');
+        this.$window = $(window);
+        this.$subnav = $('#subnav');
+        this.$window.bind('scroll', this.updatePosition);
+        this.subnavTop = this.$subnav.offset().top - 40;
+    },
+
+    updatePosition: function() {
+        var scrollTop = this.$window.scrollTop();
+
+        if (scrollTop >= this.subnavTop)
+            this.$subnav.addClass('subnav-fixed');
+        else
+            this.$subnav.removeClass('subnav-fixed');
+    },
+
     render: function() {
         this.stats = new Search.Views.StatsView({
             model: DCC.Search,
             collection: DCC.Documents
         }).render();
-        this.stats.$el.appendTo(this.el);
+        this.stats.$el.appendTo( $('#stats') );
 
         this.documents = new Document.Views.DocumentsView({
             collection: DCC.Documents
