@@ -3,4 +3,5 @@
 
 <script defer src="${ASSETS_URL}js/lib/bootstrap-collapse.js"></script>
 
-<script defer src="${ASSETS_URL}js/src/application.js"></script>
+<script src="${ASSETS_URL}/js/lib/underscore-min.js"></script>
+

@@ -1,13 +1,8 @@
 package org.icgc;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import java.io.IOException;
+import static org.icgc.SearchUtils.toStringContent;
 import javax.inject.Inject;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.common.xcontent.ToXContent;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,17 +34,5 @@ public class DocumentController {
             return toStringContent(repo.searchAll(size, from, indices.split(DELIMITER)));
 
         return toStringContent(repo.searchSources(q, size, from, indices.split(DELIMITER)));
-    }
-
-    private String toStringContent(SearchResponse response) {
-        try {
-            XContentBuilder builder = XContentFactory.contentBuilder(XContentType.JSON);
-            builder.startObject();
-            response.toXContent(builder, ToXContent.EMPTY_PARAMS);
-            builder.endObject();
-            return builder.string();
-        } catch (IOException e) {
-            throw new IllegalStateException("cannot convert response to JSON");
-        }
     }
 }

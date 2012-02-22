@@ -1,7 +1,10 @@
 package org.icgc.config;
 
+import java.io.IOException;
+import java.io.InputStream;
 import javax.inject.Inject;
 import org.icgc.EnvironmentInterceptor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -17,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+import com.google.common.io.ByteStreams;
 
 @Configuration
 @EnableWebMvc
@@ -50,6 +54,20 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         viewResolver.setOrder(0);
 
         return viewResolver;
+    }
+
+    @Bean
+    @Qualifier("facets")
+    public String facets() throws IOException {
+        InputStream is = WebMvcConfig.class.getResourceAsStream("/facets.json");
+        return new String(ByteStreams.toByteArray(is));
+    }
+
+    @Bean
+    @Qualifier("query")
+    public String query() throws IOException {
+        InputStream is = WebMvcConfig.class.getResourceAsStream("/query.json");
+        return new String(ByteStreams.toByteArray(is));
     }
 
     @Bean

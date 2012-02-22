@@ -3,3 +3,31 @@ body {
   padding-bottom: 40px;
 }
 
+small {
+  font-size: 85%;
+}
+
+#facets ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#facets label {
+  font-size: 12px;
+}
+#facets .count:before {
+  content: '(';
+}
+#facets .count:after {
+  content: ')';
+}
+
+
+@media (max-width: 980px) {
+  body {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+
