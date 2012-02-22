@@ -39,6 +39,7 @@
 		DCC.queryFacets = ${queryFacets};
 
 		DCC.Documents = new Document.Models.Documents(DCC.hits(initialDocuments));
+		DCC.Search = new Search.Models.Search({ count: initialDocuments.hits.total} );
 		DCC.Facets = new Facet.Models.Facets(DCC.facets(initialDocuments));
 
 		// Initialize main application view

@@ -41,7 +41,7 @@ Document.Views.DocumentsView = Backbone.View.extend({
 
     initialize: function() {
         _.bindAll(this, 'render');
-        this.collection.bind('reset', this.render);
+        this.collection.on('reset', this.render);
     },
 
     render: function() {
@@ -60,9 +60,6 @@ Document.Views.DocumentsView = Backbone.View.extend({
         });
         return this;
     }
-});
-
-Document.Views.DocumentStatsView = Backbone.View.extend({
 });
 
 })(DCC.module('document'));
