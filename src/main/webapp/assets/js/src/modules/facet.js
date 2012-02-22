@@ -86,7 +86,7 @@ Facet.Views.FacetView = Backbone.View.extend({
         } else {
             this.$(':checked').each(function() {
                 var value = that.getValue( $(this).closest('li') );
-                if (value != '_all') {
+                if (value) {
                     values.push( value );
                 }
             });
@@ -104,11 +104,15 @@ Facet.Views.FacetView = Backbone.View.extend({
     getValue: function($li) {
         switch (this.model.get('_type')) {
         case 'terms':
-            return $li.data('value');
+            return $li.data('value') || null;
         case 'range':
             var from = $li.data('from'),
-                to = $li.data('to'),
-                range ={ from: from };
+                to = $li.data('to');
+
+            if (!from && !to)
+                return null;
+
+            var range ={ from: from || 0 };
             to && ( range.to = to );
             return range;
         }
