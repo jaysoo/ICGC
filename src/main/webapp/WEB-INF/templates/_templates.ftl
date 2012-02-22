@@ -1,6 +1,6 @@
 <script type="text/html" id="documentTmpl">
-<h3>{{ id }}</h3>
-<dl class="more" ${HIDDEN}>
+<h4><a title="toggle details" class="show-more" href="javascript:void(0)">{{ id }}</a></h4>
+<dl class="more well" ${HIDDEN}>
 {{#attributes}}
 	<dt>{{name}}</dt>
 	<dd>{{value}}</dd>

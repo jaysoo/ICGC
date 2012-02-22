@@ -12,7 +12,13 @@ Document.Models.Documents = Backbone.Collection.extend({
 //~ Views =========================================================================================
 
 Document.Views.DocumentView = Backbone.View.extend({
-    tagName: 'li',
+    tagName: 'article',
+
+    areDetailsShown: false,
+
+    events: {
+        'click .show-more': 'showDetails'
+    },
 
     initialize: function() {
     },
@@ -30,12 +36,24 @@ Document.Views.DocumentView = Backbone.View.extend({
             attributes: attrs
         }) );
 
+        this.$('.show-more').tooltip({ placement: 'right' });
+
         return this;
+    },
+
+    showDetails: function() {
+        if (this.areDetailsShown) {
+            this.$('.more').hide();
+            this.areDetailsShown = false;
+        } else {
+            this.$('.more').show();
+            this.areDetailsShown = true;
+        }
     }
 });
 
 Document.Views.DocumentsView = Backbone.View.extend({
-    tagName: 'ul',
+    tagName: 'div',
 
     subViews: {},
 
