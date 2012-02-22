@@ -51,13 +51,19 @@ Document.Views.DocumentsView = Backbone.View.extend({
             view.remove();
         });
         this.subViews = {};
+        this.$el.empty();
 
-        this.collection.each(function(model) {
-            that.subViews[model.id] = new Document.Views.DocumentView({
-                model: model
-            }).render();
-            that.subViews[model.id].$el.appendTo(that.el);
-        });
+        if (this.collection.length) {
+            this.collection.each(function(model) {
+                that.subViews[model.id] = new Document.Views.DocumentView({
+                    model: model
+                }).render();
+                that.subViews[model.id].$el.appendTo(that.el);
+            });
+        } else {
+            this.$el.html('<p class="alert">Could not find documents matching your query</p>');
+        }
+
         return this;
     }
 });

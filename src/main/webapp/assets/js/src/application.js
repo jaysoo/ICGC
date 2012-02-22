@@ -54,7 +54,7 @@ DCC.SidebarView = Backbone.View.extend({
         DCC.Facets.on('change:values', this.resetSearch);
 
         this.search = new Search.Views.SearchView({
-            el: $('#q'),
+            el: $('#search'),
             model: DCC.Search,
             collection: DCC.Facets,
             queryString: DCC.query,
@@ -80,7 +80,7 @@ DCC.MainView = Backbone.View.extend({
         _.bindAll(this, 'updatePosition');
         this.$window = $(window);
         this.$subnav = $('#subnav');
-        this.$window.bind('scroll', this.updatePosition);
+        this.$window.bind('scroll', _.throttle(this.updatePosition, 25));
         this.subnavTop = this.$subnav.offset().top - 40;
     },
 

@@ -4,6 +4,7 @@
 	<div class="subnav" id="subnav">
 		<form id="search" class="pull-left">
 			<input id="q" name="q" type="text" class="input-xxlarge search-query" placeholder="Search">
+			<i title="clear search" class="close">&times;</i>
 		</form>
 		<div id="stats" class="pull-right"></div>
 	</div>
@@ -25,10 +26,6 @@
 <#macro extra_body>
 
 	<#include "_templates.ftl">
-
-	<script src="${ASSETS_URL}/js/lib/underscore-min.js"></script>
-	<script src="${ASSETS_URL}/js/lib/backbone-min.js"></script>
-	<script src="${ASSETS_URL}/js/lib/ICanHaz.min.js"></script>
 	<script src="${ASSETS_URL}/js/src/application.js"></script>
 	<script src="${ASSETS_URL}/js/src/modules/document.js"></script>
 	<script src="${ASSETS_URL}/js/src/modules/facet.js"></script>

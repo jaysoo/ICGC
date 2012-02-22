@@ -74,18 +74,20 @@
 </script>
 
 <script type="text/html" id="paginationTmpl">
-<ul>
-  <li class="{{^prev?}}disabled{{/prev?}}">
-		<a data-page="{{prev}}" href="javascript:void(0)">Prev</a>
-	</li>
-	{{#pages}}
-		<li class="{{#active}}active{{/active}}">
-			<a href="javascript:void(0)" data-page="{{num}}">{{num}}</a>
+{{#paginate?}}
+	<ul>
+		<li class="{{^prev?}}disabled{{/prev?}}">
+			<a data-page="{{prev}}" href="javascript:void(0)">Prev</a>
 		</li>
-	{{/pages}}
-  <li class="{{^next?}}disabled{{/next?}}">
-		<a data-page="{{next}}" href="javascript:void(0)">Next</a>
-	</li>
-</ul>
+		{{#pages}}
+			<li class="{{#active}}active{{/active}}">
+				<a href="javascript:void(0)" data-page="{{num}}">{{num}}</a>
+			</li>
+		{{/pages}}
+		<li class="{{^next?}}disabled{{/next?}}">
+			<a data-page="{{next}}" href="javascript:void(0)">Next</a>
+		</li>
+	</ul>
+{{/paginate?}}
 </script>
 

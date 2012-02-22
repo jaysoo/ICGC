@@ -15,10 +15,13 @@ Search.Models.Search = Backbone.Model.extend({
 
 Search.Views.SearchView = Backbone.View.extend({
     events: {
-        'submit': 'onSubmit'
+        'submit': 'onSubmit',
+        'click .close': 'clear'
     },
 
     matchAll: { match_all: {} },
+
+    queryString: null,
 
     initialize: function(options) {
         options = options || {};
@@ -29,24 +32,36 @@ Search.Views.SearchView = Backbone.View.extend({
 
         this._queryString = options.queryString;
         this._queryFacets = options.queryFacets;
+
+        this.$q = this.$('#q');
+
+        this.$('.close').tooltip({ placement: 'right' });
     },
 
     onSubmit: function() {
         var that = this,
-            qs = this.el.value;
+            qs = this.$q.val();
 
-        this.collection.each(function(model) {
-        });
+        this.queryString = qs || null;
+
+        this.search();
 
         return false;
+    },
+
+    clear: function() {
+        this.$q.val('');
+        this.queryString = null;
+        this.search();
     },
 
     search: function() {
         var that = this,
             filters = [],
-            query = this.matchAll,
-            payload = { query: {} };
-
+            query = this.queryString
+                ? { query_string: { query: this.queryString } } 
+                : this.matchAll,
+            payload = { query: {}, facets: this._queryFacets };
 
         // Build "and" filters
         this.collection.each(function(model) {
@@ -83,6 +98,7 @@ Search.Views.SearchView = Backbone.View.extend({
                 success: function(response) {
                     var hits = DCC.hits(response),
                         facets = DCC.facets(response);
+                    DCC.Facets.reset(facets);
                     DCC.Documents.reset(hits);
                     that.model.set({ count: response.hits.total });
                 }
@@ -139,6 +155,7 @@ Search.Views.PaginationView = Backbone.View.extend({
             pages = this.pages(activePage, end, size, this.pagesToDisplay);
 
         this.$el.html( ich.paginationTmpl({
+            "paginate?": pages.length > 1,
             "prev?":  activePage > 1,
             pages: pages,
             "next?":  activePage < end,

@@ -65,6 +65,10 @@ small {
   padding-bottom: 3px;
   padding-left: 5px;
 }
+.subnav > form .close {
+  padding-top: 2px;
+  padding-left: 5px;
+}
 
 /* Fixed subnav on scroll, but only for 980px and up (sorry IE!) */
 @media (min-width: 980px) {
