@@ -70,10 +70,13 @@ Core.Views.DocumentsView = Backbone.View.extend({
     _views: {},
 
     initialize: function() {
+        _.bindAll(this, 'render');
+        this.collection.bind('reset', this.render);
     },
 
     render: function() {
         var that = this;
+        this.$el.empty();
         this.collection.each(function(model) {
             that._views[model.id] = new Core.Views.DocumentView({
                 model: model
@@ -128,6 +131,8 @@ Core.Views.FacetsView = Backbone.View.extend({
     tagName: 'ul',
 
     initialize: function() {
+        _.bindAll(this, 'render');
+        this.collection.bind('reset', this.render);
     },
 
     _views: [],
@@ -196,7 +201,17 @@ Core.Views.SearchView = Backbone.View.extend({
             payload.query = query;
         }
 
-        console.log(payload, JSON.stringify(payload));
+        $.ajax({
+            url: '/api/search',
+            data: {
+                source: JSON.stringify(payload)
+            },
+            success: function(response) {
+                var hits = DCC.hits(response),
+                    facets = DCC.facets(response);
+                DCC.Documents.reset(hits);
+            }
+        });
     }
 });
 
