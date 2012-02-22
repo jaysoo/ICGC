@@ -14,7 +14,7 @@
 <li data-value="_all">
 	<label for="{{id}}__all" class="term checkbox inline">
 		All {{id}}
-		<input id="{{id}}__all" type="checkbox" checked="checked"/>
+		<input id="{{id}}__all" type="checkbox" checked="checked" data-action="clear"/>
 	</label>
 </li>
 {{#terms}}
