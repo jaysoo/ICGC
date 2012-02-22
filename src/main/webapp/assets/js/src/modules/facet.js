@@ -104,7 +104,7 @@ Facet.Views.FacetView = Backbone.View.extend({
     getValue: function($li) {
         switch (this.model.get('_type')) {
         case 'terms':
-            return $li.data('value') || null;
+            return $li.data('value')
         case 'range':
             var from = $li.data('from'),
                 to = $li.data('to');
