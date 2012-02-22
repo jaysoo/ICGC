@@ -1,10 +1,12 @@
 <script type="text/html" id="documentTmpl">
 <h4>
 	<a title="toggle details" class="show-more" href="javascript:void(0)">{{ id }}</a>
-{{#additional}}
-	<small class="additional">({{additional}})</small>
-{{/additional}}
 </h4>
+{{#additional}}
+<div class="additional">
+	{{additional}}
+</div>
+{{/additional}}
 <dl class="more well" ${HIDDEN}>
 {{#attributes}}
 	<dt>{{name}}</dt>

@@ -17,7 +17,8 @@ Document.Views.DocumentView = Backbone.View.extend({
     areDetailsShown: false,
 
     events: {
-        'click .show-more': 'showDetails'
+        'click .show-more': 'showDetails',
+        'click .additional': 'showDetails'
     },
 
     initialize: function() {
@@ -31,10 +32,14 @@ Document.Views.DocumentView = Backbone.View.extend({
                 attrs.push({ name: k, value: this.model.attributes[k] });
         }
 
+        var additionalText = _.map(this.model.attributes, function(value, key) {
+            return key + ': ' + value;
+        }).slice(0,20).join('... ')
+
         this.$el.html( ich.documentTmpl({
             id: this.model.id,
             attributes: attrs,
-            additional: 'test'
+            additional: additionalText + '...'
         }) );
 
         this.$('.show-more').tooltip({ placement: 'right' });
@@ -44,9 +49,11 @@ Document.Views.DocumentView = Backbone.View.extend({
 
     showDetails: function() {
         if (this.areDetailsShown) {
+            this.$('.additional').show();
             this.$('.more').hide();
             this.areDetailsShown = false;
         } else {
+            this.$('.additional').hide();
             this.$('.more').show();
             this.areDetailsShown = true;
         }

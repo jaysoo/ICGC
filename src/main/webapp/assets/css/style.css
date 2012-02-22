@@ -14,12 +14,17 @@ small {
   font-size: 85%;
 }
 
+#application article {
+  margin-bottom: 10px;
+}
 #application article > .more {
   height: 300px;
   overflow: auto;
 }
-#application h4 > .additional {
-  font-size: 85%;
+#application .additional {
+  cursor: pointer;
+  color: #999;
+  font-size: 90%;
 }
 
 #facets ul {
