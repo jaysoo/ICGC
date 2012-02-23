@@ -3,4 +3,4 @@ site.name = ICGC Data Portal
 assets.url = /assets/
 
 elasticsearch.connections = localhost:9300
-elasticsearch.cluster.name = elasticsearch
+elasticsearch.cluster.name = dcc
