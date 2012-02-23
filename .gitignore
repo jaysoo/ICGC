@@ -4,5 +4,6 @@
 /.project
 /.classpath
 /.settings
+/src/main/resources/development.properties
 
 *.swp
