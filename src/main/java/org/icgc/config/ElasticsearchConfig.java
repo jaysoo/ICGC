@@ -1,58 +1,48 @@
 package org.icgc.config;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import org.elasticsearch.client.Client;
-import org.icgc.ElasticsearchNodeFactoryBean;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+
+import com.google.common.base.Splitter;
 
 @Configuration
 public class ElasticsearchConfig {
 
-    @Bean
-    public ElasticsearchNodeFactoryBean searchNode() {
-        ElasticsearchNodeFactoryBean searchNode = new ElasticsearchNodeFactoryBean();
-        searchNode.setSettings(settings());
+  @Inject
+  private ConfigurableEnvironment env;
 
-        List<Resource> locations = new ArrayList<Resource>();
-
-        final String[] urls = env.getRequiredProperty("elasticsearch.connections", String[].class);
-        for (String url : urls) {
-            try {
-                locations.add(new UrlResource(new URL(url)));
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Bad connection URL for elasticsearch: " + url);
-            }
-        }
-
-        searchNode.setConfigLocations(locations);
-
-        return searchNode;
+  @Bean
+  public Client searchClient() throws Exception {
+    Iterable<String> hosts = Splitter.on(",").split(env.getRequiredProperty("elasticsearch.connections"));
+    TransportClient tc = new TransportClient(ImmutableSettings.settingsBuilder().put(settings()));
+    for(String host : hosts) {
+      if(host.contains(":")) {
+        String[] hostAndPort = host.split(":");
+        if(hostAndPort.length != 2) throw new IllegalArgumentException("invalid host:port '"+host+"'");
+        tc.addTransportAddress(new InetSocketTransportAddress(hostAndPort[0], Integer.parseInt(hostAndPort[1])));
+      } else {
+        tc.addTransportAddress(new InetSocketTransportAddress(host, 9300));
+      }
     }
+    return tc;
+  }
 
-    @Bean
-    public Client searchClient() throws Exception {
-        return searchNode().getObject().client();
-    }
+  private Map<String, String> settings() {
+    Map<String, String> settings = new HashMap<String, String>();
 
-    @Inject
-    private ConfigurableEnvironment env;
+    settings.put("cluster.name", env.getRequiredProperty("elasticsearch.cluster.name"));
 
-    @Bean
-    public Map<String, String> settings() {
-        Map<String, String> settings = new HashMap<String, String>();
-
-        settings.put("cluster.name", env.getRequiredProperty("elasticsearch.cluster.name"));
-
-        return settings;
-    }
+    return settings;
+  }
 
 }

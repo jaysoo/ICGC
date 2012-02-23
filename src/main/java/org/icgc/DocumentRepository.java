@@ -29,7 +29,7 @@ public final class DocumentRepository {
      * Performs a search using a JSON string. Will convert string to SearchRequest object.
      */
     public SearchResponse search(String json) {
-        return search(new SearchRequest().source(json));
+        return search(new SearchRequest("_all").source(json));
     }
 
     public SearchResponse searchAll(int size, int from, String... indices) {
