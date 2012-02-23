@@ -66,8 +66,23 @@ var Document = DCC.module('document'),
 
 //~ Sidebar view for aside content ================================================================
 DCC.SidebarView = Backbone.View.extend({
+    blockUiOptions: {
+        message: '<span class="loading"></span>',
+
+        overlayCSS:  { 
+            backgroundColor: '#fff', 
+            opacity: 0.6 
+        },
+
+        css: { 
+            border: 'none',
+            padding: 0, 
+            margin: 0
+        }
+    },
+
     initialize: function() {
-        _.bindAll(this, 'render', 'resetSearch');
+        _.bindAll(this, 'render', 'resetSearch', 'blockElement', 'unblockElement');
 
         DCC.Facets.on('change:values', this.resetSearch);
 
@@ -76,7 +91,9 @@ DCC.SidebarView = Backbone.View.extend({
             model: DCC.Search,
             collection: DCC.Facets,
             queryString: DCC.query,
-            queryFacets: DCC.queryFacets
+            queryFacets: DCC.queryFacets,
+            beforeSearch: this.blockElement,
+            afterSearch: this.unblockElement
         });
 
         this.facets = new Facet.Views.FacetsView({
@@ -86,6 +103,14 @@ DCC.SidebarView = Backbone.View.extend({
 
     render: function() {
         this.facets.render().$el.appendTo( $('#facets') );
+    },
+
+    blockElement: function() {
+        $('#application').block(this.blockUiOptions);
+    },
+
+    unblockElement: function() {
+        $('#application').unblock();
     },
 
     resetSearch: function() {
