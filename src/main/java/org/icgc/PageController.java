@@ -30,15 +30,15 @@ public class PageController {
     private ViewResolver viewResolver;
 
     @Inject
-    @Qualifier("facets")
+    @Qualifier("elasticsearch.query.facets")
     private String facets;
 
     @Inject
-    @Qualifier("query")
-    private String query;
+    @Qualifier("elasticsearch.query.template")
+    private String queryTemplate;
 
     @Inject
-    @Qualifier("size")
+    @Qualifier("elasticsearch.query.size")
     private Integer size;
 
     public static final String MATCH_ALL = "{ \"match_all\": {} }";
@@ -46,10 +46,10 @@ public class PageController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request, Locale locale, Principal principal)
             throws NoSuchRequestHandlingMethodException {
-        String json = String.format(query, size, MATCH_ALL, facets);
+        String json = String.format(queryTemplate, size, MATCH_ALL, facets);
         return page("index", request, locale, principal)
-                .addObject("query", query)
-                .addObject("size", size)
+                .addObject("queryTemplate", queryTemplate)
+                .addObject("querySize", size)
                 .addObject("queryFacets", facets)
                 .addObject("documents", toStringContent(repo.search(json)));
     }

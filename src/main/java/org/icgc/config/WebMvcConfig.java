@@ -45,7 +45,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    @Qualifier("size")
+    @Qualifier("elasticsearch.query.size")
     public Integer size() {
         return 10;
     }
@@ -63,14 +63,14 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    @Qualifier("facets")
+    @Qualifier("elasticsearch.query.facets")
     public String facets() throws IOException {
         InputStream is = WebMvcConfig.class.getResourceAsStream("/facets.json");
         return new String(ByteStreams.toByteArray(is));
     }
 
     @Bean
-    @Qualifier("query")
+    @Qualifier("elasticsearch.query.template")
     public String query() throws IOException {
         InputStream is = WebMvcConfig.class.getResourceAsStream("/query.json");
         return new String(ByteStreams.toByteArray(is));
