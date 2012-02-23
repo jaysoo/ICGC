@@ -1,3 +1,4 @@
+//~ DCC namespace and helper functions ============================================================
 window.DCC = {
     /*
      * Memoized function for loading required modules.

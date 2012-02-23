@@ -166,7 +166,7 @@ Search.Views.StatsView = Backbone.View.extend({
         this.$el.html( ich.statsTmpl({
             start: start,
             end: end,
-            count: this.model.get('count')
+            count: _.format(this.model.get('count'), { separateThousands: true })
         }) );
 
         return this;
