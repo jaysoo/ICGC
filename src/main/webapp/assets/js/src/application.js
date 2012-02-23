@@ -1,14 +1,25 @@
 window.DCC = {
+    /*
+     * Memoized function for loading required modules.
+     *
+     * The first time a module is called via DCC.module(name), it will be empty. Any subsequent calls for that module will return the previous object.
+     */
     module: _.memoize(function() {
         return { Views: {}, Models: {} };
     }),
 
+    /*
+     * Helper method for pulling out hits data from an elasticsearch response.
+     */
     hits: function(response) {
         return _.map(response.hits.hits, function(hit) {
             return _.extend({}, hit._source, { id: hit._id });
         });
     },
 
+    /*
+     * Helper method for pulling out facets data from an elasticsearch response.
+     */
     facets: function(response) {
         var facets = [];
 
@@ -21,6 +32,13 @@ window.DCC = {
         return facets;
     },
 
+    /*
+     * Mixins that can be used to extend a Backbone Model/View with reusable functions.
+     *
+     * Usage example:
+     * var MyPaginationModel = Backbone.Model.extend({ ... });
+     * _.extend(MyPaginationModel.prototype, DCC.Mixins.Pagination);
+     */
     Mixins: {
         Pagination: {
             pages: function(active, end, size, pagesToDisplay) {
@@ -40,13 +58,13 @@ window.DCC = {
     }
 };
 
-
 (function() {
 
 var Document = DCC.module('document'),
     Facet = DCC.module('facet'),
     Search = DCC.module('search');
 
+//~ Sidebar view for aside content ================================================================
 DCC.SidebarView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, 'render', 'resetSearch');
@@ -75,6 +93,7 @@ DCC.SidebarView = Backbone.View.extend({
     }
 });
 
+//~ Main view  for middle content =================================================================
 DCC.MainView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, 'updatePosition');
@@ -111,6 +130,8 @@ DCC.MainView = Backbone.View.extend({
         this.pagination.$el.appendTo(this.el);
     }
 });
+
+//~ Initialize application ========================================================================
 
 DCC.AppView = Backbone.View.extend({
     render: function() {
