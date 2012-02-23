@@ -29,9 +29,9 @@ _.mixin({
     },
     format: function (n, o) {
         if (isNaN(n) || n === 0 || n == '0')
-            return '--';
+            return null;
         if (o.zeroIsNull === true && n === 0)
-            return '--';
+            return null;
         if (o.decimals !== undefined)
             n = _.roundDecimals(n, o.decimals);
         if (o.separateThousands === true)
