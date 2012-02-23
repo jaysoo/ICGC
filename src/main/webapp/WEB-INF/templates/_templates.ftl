@@ -1,6 +1,9 @@
 <script type="text/html" id="documentTmpl">
 <h4>
-	<a title="toggle details" class="show-more" href="javascript:void(0)">{{ id }}</a>
+	<a title="toggle details" class="show-more" href="javascript:void(0)">
+		{{ id }}
+		<i class="icon-chevron-up"></i>
+	</a>
 </h4>
 {{#additional}}
 <div class="additional">
@@ -18,7 +21,7 @@
 <script type="text/html" id="facetTermsTmpl">
 <h4>{{id}}</h4>
 <ul>
-<li data-value="_all">
+<li class="all">
 	<label for="{{id}}__all" class="term checkbox inline">
 		All {{id}}
 		<input id="{{id}}__all" type="checkbox" checked="checked" data-action="clear"/>
@@ -40,7 +43,7 @@
 <script type="text/html" id="facetRangeTmpl">
 <h4>{{id}}</h4>
 <ul>
-<li data-value="_all">
+<li class="all">
 	<label for="{{id}}__all" class="term checkbox inline">
 		All {{id}}
 		<input id="{{id}}__all" type="checkbox" checked="checked" data-action="clear"/>

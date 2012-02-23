@@ -48,15 +48,19 @@ Document.Views.DocumentView = Backbone.View.extend({
     },
 
     showDetails: function() {
+         var that = this;
         if (this.areDetailsShown) {
             this.$('.additional').show();
             this.$('.more').hide();
-            this.areDetailsShown = false;
         } else {
             this.$('.additional').hide();
             this.$('.more').show();
-            this.areDetailsShown = true;
         }
+
+        this.areDetailsShown = !this.areDetailsShown;
+
+        this.$('i').toggleClass('icon-chevron-up', !that.areDetailsShown);
+        this.$('i').toggleClass('icon-chevron-down', that.areDetailsShown);
     }
 });
 
