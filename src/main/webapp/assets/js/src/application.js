@@ -67,6 +67,23 @@ var Document = DCC.module('document'),
 
 //~ Sidebar view for aside content ================================================================
 DCC.SidebarView = Backbone.View.extend({
+    initialize: function(options) {
+        options = options || {};
+
+        _.bindAll(this, 'render');
+
+        this.facets = new Facet.Views.FacetsView({
+            collection: DCC.Facets
+        });
+    },
+
+    render: function() {
+        this.facets.render().$el.appendTo( this.el );
+    },
+});
+
+//~ Main view  for middle content =================================================================
+DCC.MainView = Backbone.View.extend({
     blockUiOptions: {
         message: '<span class="loading"></span>',
 
@@ -83,10 +100,14 @@ DCC.SidebarView = Backbone.View.extend({
     },
 
     initialize: function() {
-        _.bindAll(this, 'render', 'resetSearch', 'blockElement', 'unblockElement');
+        _.bindAll(this, 'updatePosition', 'setSearchToPageZero', 'blockElement', 'unblockElement');
 
-        DCC.Facets.on('change:values', this.resetSearch);
+        this.$window = $(window);
+        this.$subnav = $('#subnav');
+        this.$window.bind('scroll', _.throttle(this.updatePosition, 25));
+        this.subnavTop = this.$subnav.offset().top - 40;
 
+        // Sub views
         this.search = new Search.Views.SearchView({
             el: $('#search'),
             model: DCC.Search,
@@ -97,36 +118,21 @@ DCC.SidebarView = Backbone.View.extend({
             afterSearch: this.unblockElement
         });
 
-        this.facets = new Facet.Views.FacetsView({
-            collection: DCC.Facets
+        this.stats = new Search.Views.StatsView({
+            model: DCC.Search,
+            collection: DCC.Documents
         });
-    },
 
-    render: function() {
-        this.facets.render().$el.appendTo( $('#facets') );
-    },
+        this.documents = new Document.Views.DocumentsView({
+            collection: DCC.Documents
+        });
 
-    blockElement: function() {
-        $('#application').block(this.blockUiOptions);
-    },
+        this.pagination = new Search.Views.PaginationView({
+            model: DCC.Search
+        });
 
-    unblockElement: function() {
-        $('#application').unblock();
-    },
-
-    resetSearch: function() {
-        DCC.Search.set({ from: 0 }, { silent: true });
-    }
-});
-
-//~ Main view  for middle content =================================================================
-DCC.MainView = Backbone.View.extend({
-    initialize: function() {
-        _.bindAll(this, 'updatePosition');
-        this.$window = $(window);
-        this.$subnav = $('#subnav');
-        this.$window.bind('scroll', _.throttle(this.updatePosition, 25));
-        this.subnavTop = this.$subnav.offset().top - 40;
+        // Go back to first page when facet is updated.
+        DCC.Facets.on('change:values', this.setSearchToPageZero);
     },
 
     updatePosition: function() {
@@ -139,21 +145,23 @@ DCC.MainView = Backbone.View.extend({
     },
 
     render: function() {
-        this.stats = new Search.Views.StatsView({
-            model: DCC.Search,
-            collection: DCC.Documents
-        }).render();
-        this.stats.$el.appendTo( $('#stats') );
+        this.stats.render().$el.appendTo( $('#stats') );
 
-        this.documents = new Document.Views.DocumentsView({
-            collection: DCC.Documents
-        }).render();
-        this.documents.$el.appendTo(this.el);
+        this.documents.render().$el.appendTo(this.el);
 
-        this.pagination = new Search.Views.PaginationView({
-            model: DCC.Search
-        }).render();
-        this.pagination.$el.appendTo(this.el);
+        this.pagination.render().$el.appendTo(this.el);
+    },
+
+    blockElement: function() {
+        this.$el.block(this.blockUiOptions);
+    },
+
+    unblockElement: function() {
+        this.$el.unblock();
+    },
+
+    setSearchToPageZero: function() {
+        DCC.Search.set({ from: 0 }, { silent: true });
     }
 });
 
@@ -162,7 +170,7 @@ DCC.MainView = Backbone.View.extend({
 DCC.AppView = Backbone.View.extend({
     render: function() {
         this.content = new DCC.MainView({ el: $('#application') }).render();
-        this.sidebar = new DCC.SidebarView({ el: $('#sidebar') }).render();
+        this.sidebar = new DCC.SidebarView({ el: $('#facets') }).render();
     }
 });
 
