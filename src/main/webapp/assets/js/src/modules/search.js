@@ -27,7 +27,30 @@ Search.Views.SearchView = Backbone.View.extend({
     initialize: function(options) {
         options = options || {};
 
+        VS.init({
+          container: $("#search"),
+          query: '',
+          callbacks : {
+            search       : function(query, searchCollection) {
+              searchCollection.map(function(f) {
+                console.log(f.serialize());
+              })
+            },
+            facetMatches : function(callback) {
+              callback(['gene_affected']);
+            },
+            valueMatches : function(facet, searchTerm, callback) {
+              switch(facet) {
+              case 'gene_affected':
+                callback(['BRCA1', '339302'])
+              }
+            }
+          }
+        });
+
         _.bindAll(this, 'search', 'updateQueryString');
+        
+        
         this.collection.on('change:values', this.search);
         this.model
             .on('change:queryString', this.updateQueryString)

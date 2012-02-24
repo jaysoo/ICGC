@@ -2,10 +2,14 @@
 
 <#macro subnav>
 	<div class="subnav" id="subnav">
+	    <div id="search" class="visual_search"></div>
+<!--
+
 		<form id="search">
 			<input id="q" name="q" type="text" class="pull-left input-xxlarge search-query" placeholder="Search">
 			<i title="clear search" class="close pull-left">&times;</i>
 		</form>
+		-->
 		<div id="stats" class="pull-right"></div>
 	</div>
 </#macro>
