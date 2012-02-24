@@ -24,15 +24,16 @@ public class DocumentController {
     public String search(@RequestParam(value = "q", defaultValue = "") String q,
             @RequestParam(value = "size", defaultValue = DEFAULT_SIZE) int size,
             @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "indices", defaultValue = "") String indices,
+            @RequestParam(value = "index", defaultValue = "") String index,
+            @RequestParam(value = "type", defaultValue = "") String type,
             @RequestParam(value = "source", defaultValue = "") String source) {
 
         if (!isNullOrEmpty(source))
-            return toStringContent(repo.search(source));
+            return toStringContent(repo.search(source, index, type));
 
         if (isNullOrEmpty(q))
-            return toStringContent(repo.searchAll(size, from, indices.split(DELIMITER)));
+            return toStringContent(repo.searchAll(size, from, index.split(DELIMITER)));
 
-        return toStringContent(repo.searchSources(q, size, from, indices.split(DELIMITER)));
+        return toStringContent(repo.searchSources(q, size, from, index.split(DELIMITER)));
     }
 }

@@ -23,7 +23,7 @@ public class DocumentRepositoryTest {
 
     @Test
     public void testSearchSources() {
-        SearchResponse resp = repo.searchSources("AN_SSM_00004", 10, 0, "ssm");
+        SearchResponse resp = repo.searchSources("AN_SSM_00004", 10, 0, "dcc");
         assertTrue(resp.getHits().getTotalHits() > 0);
     }
 

@@ -9,8 +9,9 @@
 			<a class="brand" href="#">${SITE_NAME}</a>
 			<nav class="nav-collapse">
 				<ul class="nav">
-					<li class="active"><a href="#">Home</a></li>
-					<li><a href="#about">About</a></li>
+					<li class="<#if currPage == "index">active</#if>"><a href="${PAGES_URL}">Overview</a></li>
+					<li class="<#if currPage == "search">active</#if>"><a href="${PAGES_URL}search">Data Access</a></li>
+					<li class="<#if currPage == "documentation">active</#if>"><a href="javascript:void(0)">Documentation</a></li>
 				</ul>
 			</nav>
 		</div>

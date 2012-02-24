@@ -1,27 +1,24 @@
 <#include "base.ftl">
 
 <#macro subnav>
-	<div class="subnav" id="subnav">
-	    <div id="search" class="visual_search"></div>
-<!--
-
-		<form id="search">
+	<div class="subnav" id="app-header">
+		<form class="form-search form-inline pull-left">
+			<select class="pull-left input-medium indices"></select>
 			<input id="q" name="q" type="text" class="pull-left input-xxlarge search-query" placeholder="Search">
 			<i title="clear search" class="close pull-left">&times;</i>
 		</form>
-		-->
-		<div id="stats" class="pull-right"></div>
+		<div class="stats pull-right"></div>
 	</div>
 </#macro>
 
 <#macro page_content>
 	<div class="row-fluid">
-		<aside class="span4" id="sidebar">
-			<div class="well" id="facets">
+		<aside class="span4" id="app-sidebar">
+			<div class="well facets">
 			</div>
 		</aside>
 		<div class="span8">
-			<section id="application" class="">
+			<section id="app-main" class="">
 			</section>
 		</div>
 	</div>
@@ -30,7 +27,9 @@
 <#macro extra_body>
 
 	<#include "_templates.ftl">
+	<script src="${ASSETS_URL}/js/src/underscore-mixins.js"></script>
 	<script src="${ASSETS_URL}/js/src/application.js"></script>
+	<script src="${ASSETS_URL}/js/src/modules/index.js"></script>
 	<script src="${ASSETS_URL}/js/src/modules/document.js"></script>
 	<script src="${ASSETS_URL}/js/src/modules/facet.js"></script>
 	<script src="${ASSETS_URL}/js/src/modules/search.js"></script>
@@ -38,6 +37,7 @@
 	<script>
 	$(function() {
 		var Document = DCC.module('document'),
+			Index = DCC.module('index'),
 			Facet = DCC.module('facet'),
 			Search = DCC.module('search');
 
@@ -46,6 +46,7 @@
 		DCC.queryTemplates = '${queryTemplate}';
 		DCC.queryFacets = ${queryFacets};
 
+		DCC.Indices = new Index.Models.Indices(${indices});
 		DCC.Documents = new Document.Models.Documents(DCC.hits(initialDocuments));
 		DCC.Search = new Search.Models.Search({ size: ${querySize}, count: initialDocuments.hits.total} );
 		DCC.Facets = new Facet.Models.Facets(DCC.facets(initialDocuments));

@@ -1,12 +1,7 @@
  {
-    "chromosome_strand": {
+    "chromosome": {
       "terms": {
-        "field": "chromosome_strand"
-      }
-    },
-    "assembly_version": {
-      "terms": {
-        "field": "assembly_version"
+        "field": "chromosome"
       }
     },
     "mutation": {
@@ -14,14 +9,19 @@
         "field": "mutation"
       }
     },
-    "experimental_protocol": {
+    "consequence_type": {
       "terms": {
-        "field": "experimental_protocol"
+        "field": "consequence_type"
       }
     },
-    "base_calling_algorithm": {
+    "gene_affected": {
       "terms": {
-        "field": "base_calling_algorithm"
+        "field": "gene_affected"
+      }
+    },
+    "aa_mutation": {
+      "terms": {
+        "field": "aa_mutation"
       }
     },
     "chromosome_start": {

@@ -48,20 +48,32 @@ Search.Views.SearchView = Backbone.View.extend({
           }
         });
 
-        _.bindAll(this, 'search', 'updateQueryString');
-        
+        _.bindAll(this, 'search', 'updateQueryString', 'updateResults', 'onError')
         
         this.collection.on('change:values', this.search);
         this.model
             .on('change:queryString', this.updateQueryString)
             .on('change', this.search);
 
-        this._queryString = options.queryString;
-        this._queryFacets = options.queryFacets;
+        this.queryString = options.queryString;
+        this.queryFacets = options.queryFacets;
+
+        // Setup callbacks for before and after searches
+        this.beforeSearch = _.isFunction(options.beforeSearch)
+            ? options.beforeSearch
+            : $.noop;
+        this.afterSearch = _.isFunction(options.afterSearch)
+            ? options.afterSearch
+            : $.noop;
 
         this.$q = this.$('#q');
 
         this.$('.close').tooltip({ placement: 'right' });
+
+        this.$errorMessage = ich.errorMessageTmpl({
+            header: 'Error',
+            body: 'An unexpected error has occurred. Please try again later'
+        }).appendTo( this.el ).modal({ show: false });
     },
 
     onSubmit: function() {
@@ -76,6 +88,13 @@ Search.Views.SearchView = Backbone.View.extend({
         return false;
     },
 
+    /*
+     * Called when error occurs during AJAX request.
+     */
+    onError: function(header, message) {
+        this.$errorMessage.modal('show');
+    },
+
     clear: function() {
         // Need to reload facets
         this.areFacetsDirty = true;
@@ -87,12 +106,11 @@ Search.Views.SearchView = Backbone.View.extend({
     },
 
     search: function(model, values, resetFacets) {
-        var that = this,
-            filters = [],
+        var filters = [],
             query = this.model.get('queryString')
                 ? { query_string: { query: this.model.get('queryString') } } 
                 : this.matchAll,
-            payload = { query: {}, facets: this._queryFacets };
+            payload = { query: {}, facets: this.queryFacets };
 
         this.collection.each(function(model) {
             filters = filters.concat(model.filters());
@@ -116,31 +134,47 @@ Search.Views.SearchView = Backbone.View.extend({
         payload.size = this.model.get('size');
         payload.from = this.model.get('from');
 
-        var jsonString = JSON.stringify(payload);
+        var jsonString = JSON.stringify(payload),
+            index = this.model.get('index') || '',
+            type = this.model.get('type') || '';
 
         // TODO: Can do this as a Model.sync maybe?
-        if (this.jsonString != jsonString) {
-            $.ajax({
-                url: '/api/search',
-                data: {
-                    source: JSON.stringify(payload)
-                },
-                success: function(response) {
-                    var hits = DCC.hits(response),
-                        facets = DCC.facets(response);
+        if (this.jsonString != jsonString || this.type != type || this.index != index) {
+            // Callback before firing search request
+            this.beforeSearch();
 
-                    if (that.areFacetsDirty) {
-                        DCC.Facets.reset(facets);
-                        that.areFacetsDirty = false;
+            $.when(
+                $.ajax({
+                    url: '/api/search',
+                    data: {
+                        source: JSON.stringify(payload),
+                        index: index,
+                        type: type
                     }
-
-                    DCC.Documents.reset(hits);
-                    that.model.set({ count: response.hits.total });
-                }
-            });
+                })
+            )
+            // Callback after response returns
+            .then( this.afterSearch )
+            .fail( this.onError )
+            .always( this.updateResults );
         }
 
         this.jsonString = jsonString;
+        this.index = index;
+        this.type = type;
+    },
+
+    updateResults: function(response) {
+        var hits = DCC.hits(response),
+            facets = DCC.facets(response);
+
+        if (this.areFacetsDirty) {
+            DCC.Facets.reset(facets);
+            this.areFacetsDirty = false;
+        }
+
+        DCC.Documents.reset(hits);
+        this.model.set({ count: response.hits.total });
     }
 });
 
@@ -160,7 +194,7 @@ Search.Views.StatsView = Backbone.View.extend({
         this.$el.html( ich.statsTmpl({
             start: start,
             end: end,
-            count: this.model.get('count')
+            count: _.format(this.model.get('count'), { separateThousands: true })
         }) );
 
         return this;

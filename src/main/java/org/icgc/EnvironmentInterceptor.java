@@ -24,6 +24,7 @@ public class EnvironmentInterceptor extends HandlerInterceptorAdapter {
                 .addObject("ASSETS_URL", env.getProperty("assets.url"))
                 .addObject("SITE_URL", env.getProperty("site.url"))
                 .addObject("SITE_NAME", env.getProperty("site.name"))
+                .addObject("PAGES_URL", env.getProperty("site.url") + "web/")
                 .addObject("HIDDEN", "style=\"display:none\"");
     }
 }
