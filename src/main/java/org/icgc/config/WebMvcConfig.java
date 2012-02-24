@@ -1,8 +1,8 @@
 package org.icgc.config;
 
 import java.io.IOException;
-import java.io.InputStream;
 import javax.inject.Inject;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.icgc.EnvironmentInterceptor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +26,8 @@ import com.google.common.io.ByteStreams;
 @EnableWebMvc
 @ComponentScan(basePackages = "org.icgc", excludeFilters = { @Filter(Configuration.class) })
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Inject
     private ConfigurableEnvironment env;
@@ -65,15 +67,19 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     @Qualifier("elasticsearch.query.facets")
     public String facets() throws IOException {
-        InputStream is = WebMvcConfig.class.getResourceAsStream("/facets.json");
-        return new String(ByteStreams.toByteArray(is));
+        return resource("/facets.json");
+    }
+
+    @Bean
+    @Qualifier("elasticsearch.indices")
+    public String indices() throws IOException {
+        return resource("/indices.json");
     }
 
     @Bean
     @Qualifier("elasticsearch.query.template")
     public String query() throws IOException {
-        InputStream is = WebMvcConfig.class.getResourceAsStream("/query.json");
-        return new String(ByteStreams.toByteArray(is));
+        return resource("/query.json");
     }
 
     @Bean
@@ -99,6 +105,10 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/robot.txt").addResourceLocations("/assets/robot.txt");
         registry.addResourceHandler("/human.txt").addResourceLocations("/assets/human.txt");
         registry.addResourceHandler("/assets/**").addResourceLocations("/assets/");
+    }
+
+    private String resource(String location) throws IOException {
+        return new String(ByteStreams.toByteArray(WebMvcConfig.class.getResourceAsStream(location)));
     }
 
 }

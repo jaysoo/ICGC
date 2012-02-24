@@ -1,32 +1,27 @@
  {
     "chromosome": {
       "terms": {
-        "field": "chromosome",
-        "exclude": [""]
+        "field": "chromosome"
       }
     },
     "mutation": {
       "terms": {
-        "field": "mutation",
-        "exclude": [""]
+        "field": "mutation"
       }
     },
     "consequence_type": {
       "terms": {
-        "field": "consequence_type",
-        "exclude": [""]
+        "field": "consequence_type"
       }
     },
     "gene_affected": {
       "terms": {
-        "field": "gene_affected",
-        "exclude": [""]
+        "field": "gene_affected"
       }
     },
     "aa_mutation": {
       "terms": {
-        "field": "aa_mutation",
-        "exclude": [""]
+        "field": "aa_mutation"
       }
     },
     "chromosome_start": {

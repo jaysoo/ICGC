@@ -1,0 +1,14 @@
+[
+	{
+		"index": "dcc",
+		"type": "ssm"
+	},
+	{
+		"index": "dcc",
+		"type": "donor"
+	},
+	{
+		"index": "dcc",
+		"type": "gene"
+	}
+]

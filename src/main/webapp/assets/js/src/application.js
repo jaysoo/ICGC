@@ -59,13 +59,59 @@ window.DCC = {
     }
 };
 
-(function() {
+(function(Document, Facet, Search) {
 
-var Document = DCC.module('document'),
-    Facet = DCC.module('facet'),
-    Search = DCC.module('search');
+//~ Application view ==============================================================================
+DCC.HeaderView = Backbone.View.extend({
+    initialize: function(options) {
+        options = options || {};
 
-//~ Sidebar view for aside content ================================================================
+        _.bindAll(this, 'setSearchToPageZero', 'render', 'updatePosition');
+
+        // Make sure we're always visible on the page top
+        this.$window = $(window);
+        this.$window.bind('scroll', _.throttle(this.updatePosition, 25));
+        this.headerTop = this.$el.offset().top - 40;
+
+        // Sub views
+        this.stats = new Search.Views.StatsView({
+            model: DCC.Search,
+            collection: DCC.Documents
+        });
+
+        this.search = new Search.Views.SearchView({
+            el: $('#search'),
+            model: DCC.Search,
+            collection: DCC.Facets,
+            queryString: DCC.query,
+            queryFacets: DCC.queryFacets,
+            beforeSearch: this.blockElement,
+            afterSearch: this.unblockElement
+        });
+
+        // Go back to first page when facet is updated.
+        DCC.Facets.on('change:values', this.setSearchToPageZero);
+    },
+
+    render: function() {
+        this.stats.render().$el.appendTo( this.$('.stats') );
+        return this;
+    },
+
+    updatePosition: function() {
+        var scrollTop = this.$window.scrollTop();
+
+        if (scrollTop >= this.headerTop)
+            this.$el.addClass('subnav-fixed');
+        else
+            this.$el.removeClass('subnav-fixed');
+    },
+
+    setSearchToPageZero: function() {
+        DCC.Search.set({ from: 0 }, { silent: true });
+    }
+});
+
 DCC.SidebarView = Backbone.View.extend({
     initialize: function(options) {
         options = options || {};
@@ -78,50 +124,20 @@ DCC.SidebarView = Backbone.View.extend({
     },
 
     render: function() {
-        this.facets.render().$el.appendTo( this.el );
+        this.facets.render().$el.appendTo( this.$('.facets') );
+        return this;
     },
 });
 
-//~ Main view  for middle content =================================================================
 DCC.MainView = Backbone.View.extend({
     blockUiOptions: {
         message: '<span class="loading"></span>',
-
-        overlayCSS:  { 
-            backgroundColor: '#fff', 
-            opacity: 0.6 
-        },
-
-        css: { 
-            border: 'none',
-            padding: 0, 
-            margin: 0
-        }
+        overlayCSS:  { backgroundColor: '#fff', opacity: 0.6 },
+        css: { border: 'none', padding: 0, margin: 0 }
     },
 
     initialize: function() {
-        _.bindAll(this, 'updatePosition', 'setSearchToPageZero', 'blockElement', 'unblockElement');
-
-        this.$window = $(window);
-        this.$subnav = $('#subnav');
-        this.$window.bind('scroll', _.throttle(this.updatePosition, 25));
-        this.subnavTop = this.$subnav.offset().top - 40;
-
-        // Sub views
-        this.search = new Search.Views.SearchView({
-            el: $('#search'),
-            model: DCC.Search,
-            collection: DCC.Facets,
-            queryString: DCC.query,
-            queryFacets: DCC.queryFacets,
-            beforeSearch: this.blockElement,
-            afterSearch: this.unblockElement
-        });
-
-        this.stats = new Search.Views.StatsView({
-            model: DCC.Search,
-            collection: DCC.Documents
-        });
+        _.bindAll(this, 'blockElement', 'unblockElement');
 
         this.documents = new Document.Views.DocumentsView({
             collection: DCC.Documents
@@ -131,24 +147,10 @@ DCC.MainView = Backbone.View.extend({
             model: DCC.Search
         });
 
-        // Go back to first page when facet is updated.
-        DCC.Facets.on('change:values', this.setSearchToPageZero);
-    },
-
-    updatePosition: function() {
-        var scrollTop = this.$window.scrollTop();
-
-        if (scrollTop >= this.subnavTop)
-            this.$subnav.addClass('subnav-fixed');
-        else
-            this.$subnav.removeClass('subnav-fixed');
     },
 
     render: function() {
-        this.stats.render().$el.appendTo( $('#stats') );
-
         this.documents.render().$el.appendTo(this.el);
-
         this.pagination.render().$el.appendTo(this.el);
     },
 
@@ -158,10 +160,6 @@ DCC.MainView = Backbone.View.extend({
 
     unblockElement: function() {
         this.$el.unblock();
-    },
-
-    setSearchToPageZero: function() {
-        DCC.Search.set({ from: 0 }, { silent: true });
     }
 });
 
@@ -169,9 +167,11 @@ DCC.MainView = Backbone.View.extend({
 
 DCC.AppView = Backbone.View.extend({
     render: function() {
-        this.content = new DCC.MainView({ el: $('#application') }).render();
-        this.sidebar = new DCC.SidebarView({ el: $('#facets') }).render();
+        this.header = new DCC.HeaderView({ el: $('#app-header') }).render();
+        this.content = new DCC.MainView({ el: $('#app-main') }).render();
+        this.sidebar = new DCC.SidebarView({ el: $('#app-sidebar') }).render();
+        return this;
     }
 });
 
-})();
+})( DCC.module('document'), DCC.module('facet'), DCC.module('search') );

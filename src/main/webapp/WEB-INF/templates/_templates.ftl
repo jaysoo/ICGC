@@ -1,3 +1,7 @@
+<script type="text/html" id="indexTmpl">
+	<option value="{{name}}">{{name}}</option>
+</script>
+
 <script type="text/html" id="documentTmpl">
 <h4>
 	<a title="toggle details" class="show-more" href="javascript:void(0)">
