@@ -22,8 +22,9 @@ Index.Views.IndexView = Backbone.View.extend({
 });
 
 Index.Views.IndicesView = Backbone.View.extend({
-
-    
+    events: {
+      'change': 'onChange'
+    },
 
     initialize: function() {
     },
@@ -31,11 +32,31 @@ Index.Views.IndicesView = Backbone.View.extend({
     render: function() {
         var that = this;
 
-        this.collection.each(function() {
+        this.$el.append( ich.indexTmpl({
+            "selected?": true,
+            value: '',
+            label: 'ALL'
+        }) );
 
+        this.collection.each(function(model) {
+            that.$el.append( ich.indexTmpl({
+                "selected?": false,
+                value: model.get('type'),
+                label: model.get('type')
+            }) );
         });
         
         return this;
+    },
+
+
+    onChange: function(ev) {
+        var $option = this.$(':selected'),
+            type = $option.val(),
+            model = this.collection.find(function(model) {
+                return model.get('type') == type;
+            });
+        this.trigger('selected', model || null);
     }
 });
 

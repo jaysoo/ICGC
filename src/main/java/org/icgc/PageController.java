@@ -64,7 +64,7 @@ public class PageController {
                 .addObject("queryTemplate", queryTemplate)
                 .addObject("querySize", size)
                 .addObject("queryFacets", facets)
-                .addObject("documents", toStringContent(repo.search(json)));
+                .addObject("documents", toStringContent(repo.search(json, null, null)));
     }
 
     /*

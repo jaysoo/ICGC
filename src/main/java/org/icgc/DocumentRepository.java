@@ -1,5 +1,6 @@
 package org.icgc;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.queryString;
 import javax.inject.Inject;
@@ -19,17 +20,16 @@ public final class DocumentRepository {
     private Client client;
 
     /*
-     * Performs a serach using a SearchRequest object.
-     */
-    public SearchResponse search(SearchRequest request) {
-        return client.search(request).actionGet();
-    }
-
-    /*
      * Performs a search using a JSON string. Will convert string to SearchRequest object.
      */
-    public SearchResponse search(String json) {
-        return search(new SearchRequest("_all").source(json));
+    public SearchResponse search(String json, String index, String type) {
+        SearchRequest request = new SearchRequest(isNullOrEmpty(index)
+                ? "_all" : index).source(json);
+
+        if (!isNullOrEmpty(type))
+            request.types(type);
+
+        return client.search(request).actionGet();
     }
 
     public SearchResponse searchAll(int size, int from, String... indices) {

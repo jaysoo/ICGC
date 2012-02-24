@@ -112,10 +112,12 @@ Search.Views.SearchView = Backbone.View.extend({
         payload.size = this.model.get('size');
         payload.from = this.model.get('from');
 
-        var jsonString = JSON.stringify(payload);
+        var jsonString = JSON.stringify(payload),
+            index = this.model.get('index') || '',
+            type = this.model.get('type') || '';
 
         // TODO: Can do this as a Model.sync maybe?
-        if (this.jsonString != jsonString) {
+        if (this.jsonString != jsonString || this.type != type || this.index != index) {
             // Callback before firing search request
             this.beforeSearch();
 
@@ -123,7 +125,9 @@ Search.Views.SearchView = Backbone.View.extend({
                 $.ajax({
                     url: '/api/search',
                     data: {
-                        source: JSON.stringify(payload)
+                        source: JSON.stringify(payload),
+                        index: index,
+                        type: type
                     }
                 })
             )
@@ -134,6 +138,8 @@ Search.Views.SearchView = Backbone.View.extend({
         }
 
         this.jsonString = jsonString;
+        this.index = index;
+        this.type = type;
     },
 
     updateResults: function(response) {

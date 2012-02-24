@@ -2,7 +2,8 @@
 
 <#macro subnav>
 	<div class="subnav" id="app-header">
-		<form id="search">
+		<form class="form-search form-inline pull-left">
+			<select class="pull-left input-medium indices"></select>
 			<input id="q" name="q" type="text" class="pull-left input-xxlarge search-query" placeholder="Search">
 			<i title="clear search" class="close pull-left">&times;</i>
 		</form>

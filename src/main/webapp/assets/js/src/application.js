@@ -59,14 +59,14 @@ window.DCC = {
     }
 };
 
-(function(Document, Facet, Search) {
+(function(Document, Facet, Search, Index) {
 
 //~ Application view ==============================================================================
 DCC.HeaderView = Backbone.View.extend({
     initialize: function(options) {
         options = options || {};
 
-        _.bindAll(this, 'setSearchToPageZero', 'render', 'updatePosition');
+        _.bindAll(this, 'setSearchToPageZero', 'render', 'updatePosition', 'selectIndex');
 
         // Make sure we're always visible on the page top
         this.$window = $(window);
@@ -75,12 +75,13 @@ DCC.HeaderView = Backbone.View.extend({
 
         // Sub views
         this.stats = new Search.Views.StatsView({
+            el: this.$('.stats'),
             model: DCC.Search,
             collection: DCC.Documents
         });
 
         this.search = new Search.Views.SearchView({
-            el: $('#search'),
+            el: this.$('.form-search'),
             model: DCC.Search,
             collection: DCC.Facets,
             queryString: DCC.query,
@@ -89,12 +90,20 @@ DCC.HeaderView = Backbone.View.extend({
             afterSearch: this.unblockElement
         });
 
+        this.indices = new Index.Views.IndicesView({
+            el: this.$('.indices'),
+            collection: DCC.Indices
+        });
+
+        this.indices.on('selected', this.selectIndex);
+
         // Go back to first page when facet is updated.
         DCC.Facets.on('change:values', this.setSearchToPageZero);
     },
 
     render: function() {
-        this.stats.render().$el.appendTo( this.$('.stats') );
+        this.indices.render();
+        this.stats.render();
         return this;
     },
 
@@ -109,6 +118,13 @@ DCC.HeaderView = Backbone.View.extend({
 
     setSearchToPageZero: function() {
         DCC.Search.set({ from: 0 }, { silent: true });
+    },
+
+    selectIndex: function(model) {
+        DCC.Search.set({
+            index: model ? model.get('index') : null,
+            type: model ? model.get('type') : null
+        });
     }
 });
 
@@ -174,4 +190,4 @@ DCC.AppView = Backbone.View.extend({
     }
 });
 
-})( DCC.module('document'), DCC.module('facet'), DCC.module('search') );
+})( DCC.module('document'), DCC.module('facet'), DCC.module('search'), DCC.module('index') );

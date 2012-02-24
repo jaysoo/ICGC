@@ -1,5 +1,5 @@
 <script type="text/html" id="indexTmpl">
-	<option value="{{name}}">{{name}}</option>
+	<option {{#selected?}}selected{{/selected?}} value="{{value}}">{{label}}</option>
 </script>
 
 <script type="text/html" id="documentTmpl">
