@@ -7,7 +7,9 @@ Search.Models.Search = Backbone.Model.extend({
         count: 0,
         size: 10,
         from: 0,
-        queryString: null
+        queryString: null,
+        suggestions: 20,
+        searchFacets: ['gene_affected', 'donor_id']
     }
 });
 
@@ -15,10 +17,6 @@ Search.Models.Search = Backbone.Model.extend({
 //~ Views =========================================================================================
 
 Search.Views.SearchView = Backbone.View.extend({
-    events: {
-        'submit': 'onSubmit',
-        'click .close': 'clear'
-    },
 
     matchAll: { match_all: {} },
 
@@ -27,35 +25,23 @@ Search.Views.SearchView = Backbone.View.extend({
     initialize: function(options) {
         options = options || {};
 
-        VS.init({
-          container: $("#search"),
-          query: '',
+        _.bindAll(this, 'search', 'updateResults', 'onError', 'facetMatches', 'valueMatches', 'buildQuery');
+
+        this.vs = VS.init({
+          container: $("#q"),
           callbacks : {
-            search       : function(query, searchCollection) {
-              searchCollection.map(function(f) {
-                console.log(f.serialize());
-              })
-            },
-            facetMatches : function(callback) {
-              callback(['gene_affected']);
-            },
-            valueMatches : function(facet, searchTerm, callback) {
-              switch(facet) {
-              case 'gene_affected':
-                callback(['BRCA1', '339302'])
-              }
-            }
+            facetMatches : this.facetMatches,
+            valueMatches : this.valueMatches
           }
         });
 
-        _.bindAll(this, 'search', 'updateQueryString', 'updateResults', 'onError')
-        
-        this.collection.on('change:values', this.search);
-        this.model
-            .on('change:queryString', this.updateQueryString)
-            .on('change', this.search);
+        // Bind to reset because this is the only way to get notified when the search is cleared.
+        this.vs.searchQuery.on("reset", this.search);
 
-        this.queryString = options.queryString;
+        // Listen on Facet changes
+        this.collection.on('change:values', this.search);
+        this.model.on('change', this.search);
+
         this.queryFacets = options.queryFacets;
 
         // Setup callbacks for before and after searches
@@ -66,26 +52,55 @@ Search.Views.SearchView = Backbone.View.extend({
             ? options.afterSearch
             : $.noop;
 
-        this.$q = this.$('#q');
-
-        this.$('.close').tooltip({ placement: 'right' });
-
         this.$errorMessage = ich.errorMessageTmpl({
             header: 'Error',
             body: 'An unexpected error has occurred. Please try again later'
         }).appendTo( this.el ).modal({ show: false });
     },
 
-    onSubmit: function() {
-        var that = this,
-            qs = this.$q.val();
+    // Fetch the available query facets
+    facetMatches : function(callback) {
+      callback(this.model.get('searchFacets'));
+    },
 
-        // Need to reload facets
-        this.areFacetsDirty = true;
+    // Fetch the values for a particular query facet
+    valueMatches: function(facet, searchTerm, callback) {
+      var index = this.model.get('index') || '',
+          type = this.model.get('type') || '';
 
-        this.model.set({ queryString: qs || null });
+      var payload = {
+          query: this.buildQuery({exclude:facet}),
+          size: 0,
+          facets: {
+            the_facet: {
+              terms: {
+                field : facet,
+                size  : this.model.get('suggestions'),
+                regex : '(?=.*?' + searchTerm + ").*",
+                regex_flags: "CASE_INSENSITIVE"
+              }
+            }
+          }
+      };
 
-        return false;
+      $.when(
+        $.ajax({
+          url: '/api/search',
+          data: {
+              source: JSON.stringify(payload),
+              index: index,
+              type: type
+          }
+        })
+      )
+      .then(function(response) {
+        var values = [];
+        _.map(response.facets.the_facet.terms, function(t) {
+          values.push(t.term);
+        });
+        callback(values, {preserveMatches:true});
+      })
+      .fail(this.onError);
     },
 
     /*
@@ -95,42 +110,53 @@ Search.Views.SearchView = Backbone.View.extend({
         this.$errorMessage.modal('show');
     },
 
-    clear: function() {
-        // Need to reload facets
-        this.areFacetsDirty = true;
-        this.model.set({ queryString: null });
-    },
+    // Build the ES query: make a bool query out of the search box and a filter out of the selected facets
+    buildQuery: function(options) {
+      var options = options || {};
 
-    updateQueryString: function(model, value) {
-        this.$q.val(value || '');
+      var search = this.vs.searchQuery;
+      if(options.exclude) {
+        search = search.reject(function(item){
+          return item.get('category') == options.exclude;
+        });        
+      }
+      
+      var query;
+      if(search && search.length > 0) {
+        var q = search.map(function(queryTerm) {
+          var term = {};
+          term[queryTerm.get('category')] = queryTerm.get('value');
+          return {term:term};
+        });
+        query = {bool : { must : q}};
+      } else {
+        query = this.matchAll;
+      }
+      
+      var filters = [];
+      this.collection.each(function(model) {
+          filters = filters.concat(model.filters());
+      });
+      
+      if(filters.length) {
+        return {
+            filtered: {
+              query : query,
+              filter : {
+                and: filters
+              }
+            }
+          };
+      }
+      return query;
     },
 
     search: function(model, values, resetFacets) {
         var filters = [],
-            query = this.model.get('queryString')
-                ? { query_string: { query: this.model.get('queryString') } } 
-                : this.matchAll,
+            query = this.buildQuery(),
             payload = { query: {}, facets: this.queryFacets };
 
-        this.collection.each(function(model) {
-            filters = filters.concat(model.filters());
-        });
-
-        if (filters.length) {
-            // Do filtered query
-            payload.query = {
-                filtered: {
-                    query: query,
-                    filter: {
-                        and: filters
-                    }
-                }
-            };
-        } else {
-            // No filters
-            payload.query = query;
-        }
-
+        payload.query = query;
         payload.size = this.model.get('size');
         payload.from = this.model.get('from');
 
@@ -169,11 +195,14 @@ Search.Views.SearchView = Backbone.View.extend({
             facets = DCC.facets(response);
 
         if (this.areFacetsDirty) {
+            // TODO We should really update the facets all the time, but reset will lose 
+            // checkbox selections
             DCC.Facets.reset(facets);
             this.areFacetsDirty = false;
         }
 
         DCC.Documents.reset(hits);
+        // TODO: this triggers another search call (see this.model.on("change", this.search) above).
         this.model.set({ count: response.hits.total });
     }
 });

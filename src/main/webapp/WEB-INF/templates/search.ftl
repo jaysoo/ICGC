@@ -4,8 +4,7 @@
 	<div class="subnav" id="app-header">
 		<form class="form-search form-inline pull-left">
 			<select class="pull-left input-medium indices"></select>
-			<input id="q" name="q" type="text" class="pull-left input-xxlarge search-query" placeholder="Search">
-			<i title="clear search" class="close pull-left">&times;</i>
+			<div id="q" class="pull-left input-xxlarge search-query"></div>
 		</form>
 		<div class="stats pull-right"></div>
 	</div>

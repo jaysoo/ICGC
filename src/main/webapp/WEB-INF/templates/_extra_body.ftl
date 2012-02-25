@@ -7,7 +7,7 @@
 <script src="${ASSETS_URL}/js/lib/underscore-min.js"></script>
 <script src="${ASSETS_URL}/js/lib/backbone-min.js"></script>
 <script src="${ASSETS_URL}/js/lib/ICanHaz.min.js"></script>
-<script src="${ASSETS_URL}js/lib/visualsearch-min.js"></script>
+<script src="${ASSETS_URL}js/lib/visualsearch.js"></script>
 <script defer src="${ASSETS_URL}js/lib/bootstrap-tooltip.js"></script>
 <script defer src="${ASSETS_URL}js/lib/bootstrap-modal.js"></script>
 <script defer src="${ASSETS_URL}js/lib/bootstrap-collapse.js"></script>
