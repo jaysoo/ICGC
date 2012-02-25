@@ -66,7 +66,8 @@ DCC.HeaderView = Backbone.View.extend({
     initialize: function(options) {
         options = options || {};
 
-        _.bindAll(this, 'setSearchToPageZero', 'render', 'updatePosition', 'selectIndex');
+        _.bindAll(this, 'setSearchToPageZero', 'render', 'updatePosition', 'selectIndex', 'blockElement', 'unblockElement');
+
 
         // Make sure we're always visible on the page top
         this.$window = $(window);
@@ -125,6 +126,14 @@ DCC.HeaderView = Backbone.View.extend({
             index: model ? model.get('index') : null,
             type: model ? model.get('type') : null
         });
+    },
+
+    blockElement: function() {
+        this.$el.block(this.blockUiOptions);
+    },
+
+    unblockElement: function() {
+        this.$el.unblock();
     }
 });
 
@@ -153,8 +162,6 @@ DCC.MainView = Backbone.View.extend({
     },
 
     initialize: function() {
-        _.bindAll(this, 'blockElement', 'unblockElement');
-
         this.documents = new Document.Views.DocumentsView({
             collection: DCC.Documents
         });
@@ -168,14 +175,6 @@ DCC.MainView = Backbone.View.extend({
     render: function() {
         this.documents.render().$el.appendTo(this.el);
         this.pagination.render().$el.appendTo(this.el);
-    },
-
-    blockElement: function() {
-        this.$el.block(this.blockUiOptions);
-    },
-
-    unblockElement: function() {
-        this.$el.unblock();
     }
 });
 
