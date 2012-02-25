@@ -3,55 +3,8 @@
          xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
          http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="Message" version="2.5">
-
   <description>
-    Default web.xml file.  
-    This file is applied to a Web application before it's own WEB_INF/web.xml file
+    This file is only here to make Jetty 8 happy. There is a bug that prevents contexts 
+    from being loaded without a web.xml file to override the default servlet. :(
   </description>
-
-  <context-param>
-    <param-name>org.mortbay.jetty.webapp.NoTLDJarPattern</param-name>
-    <param-value>start.jar|ant-.*\.jar|dojo-.*\.jar|jetty-.*\.jar|jsp-api-.*\.jar|junit-.*\.jar|servlet-api-.*\.jar|dnsns\.jar|rt\.jar|jsse\.jar|tools\.jar|sunpkcs11\.jar|sunjce_provider\.jar|xerces.*\.jar</param-value>
-  </context-param>
-
-  <servlet id="jsp">
-    <servlet-name>jsp</servlet-name>
-    <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
-    <init-param>
-        <param-name>logVerbosityLevel</param-name>
-        <param-value>DEBUG</param-value>
-    </init-param>
-    <init-param>
-        <param-name>fork</param-name>
-        <param-value>false</param-value>
-    </init-param>
-    <init-param>
-        <param-name>xpoweredBy</param-name>
-        <param-value>false</param-value>
-    </init-param>
-    <load-on-startup>0</load-on-startup>
-  </servlet>
-
-  <servlet-mapping> 
-    <servlet-name>jsp</servlet-name> 
-    <url-pattern>*.jsp</url-pattern> 
-    <url-pattern>*.jspf</url-pattern>
-    <url-pattern>*.jspx</url-pattern>
-    <url-pattern>*.xsp</url-pattern>
-    <url-pattern>*.JSP</url-pattern> 
-    <url-pattern>*.JSPF</url-pattern>
-    <url-pattern>*.JSPX</url-pattern>
-    <url-pattern>*.XSP</url-pattern>
-  </servlet-mapping>
-  
-  <session-config>
-    <session-timeout>30</session-timeout>
-  </session-config>
-
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
-
 </web-app>
