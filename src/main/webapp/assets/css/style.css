@@ -10,6 +10,10 @@ body {
   }
 }
 
+li, dd, dt {
+    line-height: 18px;
+}
+
 small {
   font-size: 85%;
 }
@@ -108,6 +112,10 @@ small {
 
 
 /* Charts */
+.chart h3 {
+    text-align: center;
+    color: #999;
+}
 .chart-label-large {
     font-size: 36px;
     font-weight: bold;
@@ -117,4 +125,13 @@ small {
 }
 .chart-label-small {
     font-size: 14px;
+}
+
+/* Overview */
+#stats.hero-unit {
+    font-size: 16px;
+}
+#stats.hero-unit dd,
+#stats.hero-unit dt {
+    line-height: 24px;
 }

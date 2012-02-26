@@ -1,18 +1,26 @@
 <#include "base.ftl">
 
 <#macro page_content>
-  <div class="row-fluid">
-    <aside class="span3">
-      <div id="overview-stats" class="well">
-        test
-      </div>
-    </aside>
-    <div class="span9">
-      <div class="hero-unit well">
-        <h1>Welcome to the Data Portal</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ipsum tortor, pharetra ac lacinia sit amet, vulputate non dui. Etiam dolor enim, porta non eleifend eu, tristique non neque.</p>
-      </div>
-      <div id="charts"></div>
+  <div id="charts" class="row">
+      <div class="span4">
+        <div id="stats" class="hero-unit  well">
+            <h1>Statistics</h1>
+            <h2>Total documents</h2>
+            <dl>
+              <dt>Genes</dt>
+              <dd>${geneTotal}</dd>
+              <dt>Somatic mutations</dt>
+              <dd>${ssmTotal}</dd>
+              <dt>Donors</dt>
+              <dd>${donorTotal}</dd>
+            </dl>
+        </div>
+        <div class="well">
+            <h2>Data access</h2>
+            <ul>
+                <li><a href="${PAGES_URL}search">Search documents</a></li>
+            </ul>
+        </div>
     </div>
   </div>
 </#macro>
@@ -22,8 +30,13 @@
 <script src="${ASSETS_URL}js/lib/d3.v2.js"></script>
 
 <script>
+/*
+ * WARNING: The following code is for demo purposes, and will need more structure to be production ready!
+ */
 $(function() {
 
+// Mutation data
+(function() {
 var query = JSON.stringify({
        "query" : { "match_all" : {} },
 
@@ -31,7 +44,7 @@ var query = JSON.stringify({
            "chromosomes" : {
                "terms" : {
                    "field" : "chromosome",
-                   "size"  : "10"
+                   "size"  : "15"
                }
            }
        }
@@ -49,17 +62,62 @@ $.when(
     })
 )
 .then(function(json) {
-    display_chart(json);
+    processJSON(json, 'Top chromosomes by mutations', 'mutations');
 });
+})();
 
-function display_chart(json) {
-    var w = 500,
-        h = 500,
+// Gene data
+(function() {
+var query = JSON.stringify({
+       "query" : { "match_all" : {} },
+
+       "facets" : {
+           "chromosomes" : {
+               "terms" : {
+                   "field" : "chromosome",
+                   "size"  : "15"
+               }
+           }
+       }
+    });
+
+$.when(
+    $.ajax({
+        url: '${SITE_URL}api/search/',
+        data : {
+            index: 'dcc',
+            type: 'gene',
+            source: query
+        },
+        dataType : 'json'
+    })
+)
+.then(function(json) {
+    processJSON(json, 'Top chromosomes by genes', 'genes');
+});
+})();
+
+
+function processJSON(json, title, unit) {
+    var $charts = $("#charts");
+
+    for (var k in json.facets) {
+        var data = _.map(json.facets[k].terms, function(term) {
+                return { label: term.term, value: term.count };
+            }),
+            total = json.facets[k].total,
+            $el =  $('<div id="chart-' + k + '" class="span6 chart">').appendTo($charts);
+
+        $el.html('<h3>' + title + '</h3><div class="chart-content"/>');
+
+        drawChart($el.find('.chart-content')[0], total, data, unit);
+    }
+}
+
+function drawChart(el, total, data, unit) {
+    var w = 560,
+        h = 560,
         textOffset = 14;
-        data = _.map(json.facets.chromosomes.terms, function(term) {
-            return { label: term.term, value: term.count };
-        }),
-        total = json.facets.chromosomes.total,
         r = Math.min(w, h) / 2 - 50,
         ir = r * .6,
         color = d3.scale.category20(),
@@ -71,7 +129,7 @@ function display_chart(json) {
             .innerRadius(ir).outerRadius(r);
 
     // Vis and groups
-    var vis = d3.select("#charts")
+    var vis = d3.select(el)
       .append("svg:svg")
         .data([data])
         .attr("width", w)
@@ -119,7 +177,7 @@ function display_chart(json) {
             .attr("class", "chart-label-medium")
             .attr("dy", 40)
             .attr("text-anchor", "middle")
-            .text("mutations");
+            .text(unit);
 
 
       var lines = labelGroup.selectAll("line").data(pieData);

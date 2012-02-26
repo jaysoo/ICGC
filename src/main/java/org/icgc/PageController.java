@@ -49,7 +49,11 @@ public class PageController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView overview(HttpServletRequest request, Locale locale, Principal principal)
             throws NoSuchRequestHandlingMethodException {
-        return page("index", request, locale, principal);
+        String json = String.format("{ \"query\": %s, \"fields\": [] }", MATCH_ALL);
+        return page("index", request, locale, principal)
+                .addObject("geneTotal", repo.search(json, "dcc", "gene").getHits().getTotalHits())
+                .addObject("ssmTotal", repo.search(json, "dcc", "ssm").getHits().getTotalHits())
+                .addObject("donorTotal", repo.search(json, "dcc", "donor").getHits().getTotalHits());
     }
 
     /*
