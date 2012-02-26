@@ -27,7 +27,6 @@
 <#macro extra_body>
 
 	<#include "_templates.ftl">
-	<script src="${ASSETS_URL}/js/src/underscore-mixins.js"></script>
 	<script src="${ASSETS_URL}/js/src/dcc.js"></script>
 	<script src="${ASSETS_URL}/js/src/application.js"></script>
 	<script src="${ASSETS_URL}/js/src/modules/index.js"></script>

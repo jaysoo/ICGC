@@ -105,3 +105,16 @@ small {
     filter: progid:DXImageTransform.Microsoft.gradient(enabled=false); /* IE6-9 */
   }
 }
+
+
+/* Charts */
+.chart-label-large {
+    font-size: 36px;
+    font-weight: bold;
+}
+.chart-label-medium {
+    font-size: 24px;
+}
+.chart-label-small {
+    font-size: 14px;
+}
