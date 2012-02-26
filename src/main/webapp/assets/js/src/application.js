@@ -19,7 +19,7 @@ DCC.AppView = Backbone.View.extend({
             afterSearch: this.unblockElement
         });
 
-        this.content = new DCC.ContentView({ el: $('#app-main') });
+        this.content = new DCC.ContentView({ el: $('#app-content') });
 
         this.sidebar = new DCC.SidebarView({ el: $('#app-sidebar') });
     },

@@ -18,7 +18,7 @@
 			</div>
 		</aside>
 		<div class="span8">
-			<section id="app-main" class="">
+			<section id="app-content" class="">
 			</section>
 		</div>
 	</div>

@@ -14,35 +14,35 @@ small {
   font-size: 85%;
 }
 
-#sidebar .radio.inline, .checkbox.inline {
+#app-sidebar .radio.inline, .checkbox.inline {
   width: 300px;
 }
 
-#application article {
+#app-content article {
   margin-bottom: 10px;
 }
-#application article > .more {
+#app-content article > .more {
   height: 300px;
   overflow: auto;
 }
-#application .additional {
+#app-content .additional {
   cursor: pointer;
   color: #999;
   font-size: 90%;
 }
 
-#facets ul {
+.facets ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-#facets label {
+.facets label {
   font-size: 12px;
 }
-#facets .count:before {
+.facets .count:before {
   content: '(';
 }
-#facets .count:after {
+.facets .count:after {
   content: ')';
 }
 
