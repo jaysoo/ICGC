@@ -4,6 +4,7 @@
 /.project
 /.classpath
 /.settings
+/.idea
 /src/main/resources/development.properties
-
+*.iml
 *.swp
