@@ -101,6 +101,9 @@ Facet.Views.FacetView = Backbone.View.extend({
     },
 
     update: function() {
+      // Reset everything to 0 because some facets may be missing (ES didn't return missing values) 
+      this.$('small.count').html('0');
+
       var that = this;
       _.each(this.model.get('terms'), function(term) {
         that.$('li[data-value="'+term.term+'"] small.count').html(term.count);
