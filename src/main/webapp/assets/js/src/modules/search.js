@@ -197,13 +197,9 @@ Search.Views.SearchView = Backbone.View.extend({
     updateResults: function(response) {
         var hits = DCC.hits(response),
             facets = DCC.facets(response);
-
-        if (this.areFacetsDirty) {
             // TODO We should really update the facets all the time, but reset will lose 
             // checkbox selections
-            DCC.Facets.reset(facets);
-            this.areFacetsDirty = false;
-        }
+            DCC.Facets.update(facets);
 
         DCC.Documents.reset(hits);
         // TODO: this triggers another search call (see this.model.on("change", this.search) above).

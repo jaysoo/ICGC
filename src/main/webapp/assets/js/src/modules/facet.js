@@ -48,7 +48,22 @@ Facet.Models.Facet = Backbone.Model.extend({
 });
 
 Facet.Models.Facets = Backbone.Collection.extend({
-    model: Facet.Models.Facet
+    model: Facet.Models.Facet,
+
+    initialize: function() {
+        _.bindAll(this, 'update');
+    },
+    
+    update: function(facets) {
+      var that = this;
+      _.each(facets, function(facet){
+        var f = that.get(facet.id);
+        facet.values = f.get('values');
+        console.log(facet);
+        f.set(facet);
+      });
+      this.trigger('update');
+    }
 });
 
 //~ Views =========================================================================================
@@ -132,7 +147,7 @@ Facet.Views.FacetsView = Backbone.View.extend({
 
     initialize: function() {
         _.bindAll(this, 'render');
-        this.collection.on('reset', this.render);
+        this.collection.on('reset', this.render).on('update', this.render);
     },
 
     subViews: {},
