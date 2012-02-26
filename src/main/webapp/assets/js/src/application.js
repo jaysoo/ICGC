@@ -1,72 +1,56 @@
-//~ DCC namespace and helper functions ============================================================
-window.DCC = {
-    /*
-     * Memoized function for loading required modules.
-     *
-     * The first time a module is called via DCC.module(name), it will be empty. Any subsequent calls for that module will return the previous object.
-     */
-    module: _.memoize(function() {
-        return { Views: {}, Models: {} };
-    }),
-
-    /*
-     * Helper method for pulling out hits data from an elasticsearch response.
-     */
-    hits: function(response) {
-        return _.map(response.hits.hits, function(hit) {
-            return _.extend({}, hit._source, { id: hit._id });
-        });
-    },
-
-    /*
-     * Helper method for pulling out facets data from an elasticsearch response.
-     */
-    facets: function(response) {
-        var facets = [];
-
-        for (var k in response.facets) {
-            facets.push( _.extend({
-                id: k
-            }, response.facets[k]) );
-        }
-
-        return facets;
-    },
-
-    /*
-     * Mixins that can be used to extend a Backbone Model/View with reusable functions.
-     *
-     * Usage example:
-     * var MyPaginationModel = Backbone.Model.extend({ ... });
-     * _.extend(MyPaginationModel.prototype, DCC.Mixins.Pagination);
-     */
-    Mixins: {
-        Pagination: {
-            pages: function(active, end, size, pagesToDisplay) {
-                var pages = [],
-                    start = Math.max(active - pagesToDisplay / 2, 1);
-
-                for (var i = start, count = 0; i <= end && count < pagesToDisplay; i++, count++) {
-                    pages.push({
-                        num: i,
-                        active: i == active
-                    });
-                }
-
-                return pages;
-            }
-        }
-    }
-};
-
 (function(Document, Facet, Search, Index) {
 
-//~ Application view ==============================================================================
+//~ Application views ==============================================================================
+
+// Main application view that combines subviews into a single application
+DCC.AppView = Backbone.View.extend({
+    blockUiOptions: {
+        message: '<span class="loading"></span>',
+        overlayCSS:  { backgroundColor: '#fff', opacity: 0.6 },
+        css: { border: 'none', padding: 0, margin: 0 }
+    },
+
+    initialize: function() {
+        _.bindAll(this, 'blockElement', 'unblockElement');
+
+        this.header = new DCC.HeaderView({ 
+            el: $('#app-header'),
+            beforeSearch: this.blockElement, // block out content during search
+            afterSearch: this.unblockElement
+        });
+
+        this.content = new DCC.ContentView({ el: $('#app-content') });
+
+        this.sidebar = new DCC.SidebarView({ el: $('#app-sidebar') });
+    },
+
+    render: function() {
+        this.header.render();
+        this.content.render();
+        this.sidebar.render();
+        return this;
+    },
+
+    blockElement: function() {
+        this.content.$el.block(this.blockUiOptions);
+    },
+
+    unblockElement: function() {
+        this.content.$el.unblock();
+    }
+});
+
+// Top header view containg search bar and result information
 DCC.HeaderView = Backbone.View.extend({
     initialize: function(options) {
         options = options || {};
 
         _.bindAll(this, 'setSearchToPageZero', 'render', 'updatePosition', 'selectIndex');
+
+        // Optional callbacks when a search is performed
+        this.beforeSearch = options.beforeSearch || $.noop;
+        this.afterSearch = options.afterSearch || $.noop;
+
 
         // Make sure we're always visible on the page top
         this.$window = $(window);
@@ -86,8 +70,8 @@ DCC.HeaderView = Backbone.View.extend({
             collection: DCC.Facets,
             queryString: DCC.query,
             queryFacets: DCC.queryFacets,
-            beforeSearch: this.blockElement,
-            afterSearch: this.unblockElement
+            beforeSearch: this.beforeSearch,
+            afterSearch: this.afterSearch
         });
 
         this.indices = new Index.Views.IndicesView({
@@ -128,6 +112,7 @@ DCC.HeaderView = Backbone.View.extend({
     }
 });
 
+// Sidebar wiht facets
 DCC.SidebarView = Backbone.View.extend({
     initialize: function(options) {
         options = options || {};
@@ -145,16 +130,9 @@ DCC.SidebarView = Backbone.View.extend({
     },
 });
 
-DCC.MainView = Backbone.View.extend({
-    blockUiOptions: {
-        message: '<span class="loading"></span>',
-        overlayCSS:  { backgroundColor: '#fff', opacity: 0.6 },
-        css: { border: 'none', padding: 0, margin: 0 }
-    },
-
+// Results content goes here
+DCC.ContentView = Backbone.View.extend({
     initialize: function() {
-        _.bindAll(this, 'blockElement', 'unblockElement');
-
         this.documents = new Document.Views.DocumentsView({
             collection: DCC.Documents
         });
@@ -168,25 +146,6 @@ DCC.MainView = Backbone.View.extend({
     render: function() {
         this.documents.render().$el.appendTo(this.el);
         this.pagination.render().$el.appendTo(this.el);
-    },
-
-    blockElement: function() {
-        this.$el.block(this.blockUiOptions);
-    },
-
-    unblockElement: function() {
-        this.$el.unblock();
-    }
-});
-
-//~ Initialize application ========================================================================
-
-DCC.AppView = Backbone.View.extend({
-    render: function() {
-        this.header = new DCC.HeaderView({ el: $('#app-header') }).render();
-        this.content = new DCC.MainView({ el: $('#app-main') }).render();
-        this.sidebar = new DCC.SidebarView({ el: $('#app-sidebar') }).render();
-        return this;
     }
 });
 

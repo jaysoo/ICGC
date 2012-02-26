@@ -6,7 +6,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</a>
-			<a class="brand" href="#">${SITE_NAME}</a>
+			<a class="brand" href="${SITE_URL}">${SITE_NAME}</a>
 			<nav class="nav-collapse">
 				<ul class="nav">
 					<li class="<#if currPage == "index">active</#if>"><a href="${PAGES_URL}">Overview</a></li>
