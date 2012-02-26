@@ -7,9 +7,8 @@ Search.Models.Search = Backbone.Model.extend({
         count: 0,
         size: 10,
         from: 0,
-        queryString: null,
         suggestions: 20,
-        searchFacets: ['gene_affected', 'donor_id']
+        searchFields: null
     }
 });
 
@@ -60,7 +59,7 @@ Search.Views.SearchView = Backbone.View.extend({
 
     // Fetch the available query facets
     facetMatches : function(callback) {
-      callback(this.model.get('searchFacets'));
+      callback(this.model.get('searchFields'));
     },
 
     // Fetch the values for a particular query facet
@@ -124,9 +123,14 @@ Search.Views.SearchView = Backbone.View.extend({
       var query;
       if(search && search.length > 0) {
         var q = search.map(function(queryTerm) {
-          var term = {};
-          term[queryTerm.get('category')] = queryTerm.get('value');
-          return {term:term};
+          switch(queryTerm.get('category')) {
+          case 'text':
+            return {query_string : {query: queryTerm.get('value')}};
+          default:
+            var term = {};
+            term[queryTerm.get('category')] = queryTerm.get('value');
+            return {term:term};
+          }
         });
         query = {bool : { must : q}};
       } else {
