@@ -53,16 +53,14 @@ Facet.Models.Facets = Backbone.Collection.extend({
     initialize: function() {
         _.bindAll(this, 'update');
     },
-    
+
     update: function(facets) {
       var that = this;
       _.each(facets, function(facet){
         var f = that.get(facet.id);
         facet.values = f.get('values');
-        console.log(facet);
         f.set(facet);
       });
-      this.trigger('update');
     }
 });
 
@@ -76,7 +74,8 @@ Facet.Views.FacetView = Backbone.View.extend({
     },
 
     initialize: function() {
-        _.bindAll(this, 'getValue');
+        _.bindAll(this, 'getValue', 'update');
+        this.model.on('change', this.update);
     },
 
     render: function() {
@@ -88,7 +87,31 @@ Facet.Views.FacetView = Backbone.View.extend({
             this.$el.html( ich.facetRangeTmpl(this.model.toJSON()) );
             break;
         }
+
+        var el = this.$el;
+        var all = this.$('li.all input');
+        _.each(this.model.get('values'), function(term) {
+          // Select using data-value: some terms contain css selectors (e.g.: >)
+          $('li[data-value="'+term+'"] input', el).attr('checked', true);
+
+          // Uncheck the "all" checkbox
+          all.removeAttr('checked');
+        });
         return this;
+    },
+
+    update: function() {
+      var that = this;
+      _.each(this.model.get('terms'), function(term) {
+        that.$('li[data-value="'+term.term+'"] small.count').html(term.count);
+      });
+      _.each(this.model.get('ranges'), function(range) {
+        if(range.to) {
+          that.$('li[data-to="'+range.to+'"] small.count').html(range.count);
+        } else {
+          that.$('li[data-from="'+range.from+'"] small.count').html(range.count);
+        }
+      });
     },
 
     onChange: function(ev) {
@@ -147,11 +170,11 @@ Facet.Views.FacetsView = Backbone.View.extend({
 
     initialize: function() {
         _.bindAll(this, 'render');
-        this.collection.on('reset', this.render).on('update', this.render);
+        this.collection.on('reset', this.render);
     },
 
     subViews: {},
-
+    
     render: function() {
         var that = this;
 

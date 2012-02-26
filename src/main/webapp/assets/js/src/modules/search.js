@@ -19,8 +19,6 @@ Search.Views.SearchView = Backbone.View.extend({
 
     matchAll: { match_all: {} },
 
-    areFacetsDirty: false,
-
     initialize: function(options) {
         options = options || {};
 
@@ -115,15 +113,16 @@ Search.Views.SearchView = Backbone.View.extend({
 
       var search = this.vs.searchQuery;
       if(options.exclude) {
-        search = search.reject(function(item){
+        search = search.reject(function(item) {
           return item.get('category') == options.exclude;
-        });        
+        });
       }
-      
+
       var query;
       if(search && search.length > 0) {
         var q = search.map(function(queryTerm) {
           switch(queryTerm.get('category')) {
+          // special case for full-text search
           case 'text':
             return {query_string : {query: queryTerm.get('value')}};
           default:
@@ -132,7 +131,7 @@ Search.Views.SearchView = Backbone.View.extend({
             return {term:term};
           }
         });
-        query = {bool : { must : q}};
+        query = {bool : {must : q}};
       } else {
         query = this.matchAll;
       }
@@ -197,11 +196,10 @@ Search.Views.SearchView = Backbone.View.extend({
     updateResults: function(response) {
         var hits = DCC.hits(response),
             facets = DCC.facets(response);
-            // TODO We should really update the facets all the time, but reset will lose 
-            // checkbox selections
-            DCC.Facets.update(facets);
 
+        DCC.Facets.update(facets);
         DCC.Documents.reset(hits);
+
         // TODO: this triggers another search call (see this.model.on("change", this.search) above).
         this.model.set({ count: response.hits.total });
     }
