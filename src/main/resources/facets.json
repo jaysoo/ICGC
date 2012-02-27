@@ -3,7 +3,7 @@
       "terms": {
         "field": "chromosome",
         "all_terms": true,
-        "size": 25,
+        "size": 10,
         "exclude": [""]
       }
     },
@@ -11,7 +11,7 @@
       "terms": {
         "field": "mutation",
         "all_terms": true,
-        "size": 25,
+        "size": 10,
         "exclude": [""]
       }
     },
@@ -19,7 +19,7 @@
       "terms": {
         "field": "consequence_type",
         "all_terms": true,
-        "size": 20,
+        "size": 10,
         "exclude": [""]
       }
     },

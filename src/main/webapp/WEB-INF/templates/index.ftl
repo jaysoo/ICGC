@@ -44,7 +44,7 @@ var query = JSON.stringify({
            "chromosomes" : {
                "terms" : {
                    "field" : "chromosome",
-                   "size"  : "100"
+                   "size"  : "10"
                }
            }
        }
@@ -75,7 +75,7 @@ var query = JSON.stringify({
            "chromosomes" : {
                "terms" : {
                    "field" : "chromosome",
-                   "size"  : "100"
+                   "size"  : "10"
                }
            }
        }
