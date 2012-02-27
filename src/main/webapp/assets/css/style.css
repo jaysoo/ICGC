@@ -117,7 +117,7 @@ small {
     color: #999;
 }
 .chart-label-large {
-    font-size: 36px;
+    font-size: 28px;
     font-weight: bold;
 }
 .chart-label-medium {
@@ -125,6 +125,9 @@ small {
 }
 .chart-label-small {
     font-size: 14px;
+}
+.chart-label-mini {
+    font-size: 11px;
 }
 
 /* Overview */
