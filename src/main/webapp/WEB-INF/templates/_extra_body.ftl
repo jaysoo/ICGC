@@ -10,6 +10,7 @@
 <script src="${ASSETS_URL}/js/lib/ICanHaz.min.js"></script>
 <script defer src="${ASSETS_URL}js/lib/bootstrap-tooltip.js"></script>
 <script defer src="${ASSETS_URL}js/lib/bootstrap-modal.js"></script>
+<script defer src="${ASSETS_URL}js/lib/bootstrap-dropdown.js"></script>
 <script defer src="${ASSETS_URL}js/lib/bootstrap-collapse.js"></script>
 <script defer src="${ASSETS_URL}js/lib/jquery.blockUI.js"></script>
 

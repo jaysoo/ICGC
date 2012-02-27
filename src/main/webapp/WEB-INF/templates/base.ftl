@@ -35,6 +35,12 @@
 
   <#include "_extra_body.ftl">
   <@extra_body/>
+
+	<script>
+		$(function() {
+			$('.dropdown-toggle').dropdown();
+		});
+	</script>
 </body>
 </html>
 
