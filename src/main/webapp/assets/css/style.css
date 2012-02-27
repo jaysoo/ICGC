@@ -50,6 +50,11 @@ small {
   content: ')';
 }
 
+/* Nav */
+header.navbar .nav .active > .dropdown-toggle {
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.5);
+}
 
 /* Subnav */
 .subnav {

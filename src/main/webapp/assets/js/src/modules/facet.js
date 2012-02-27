@@ -85,8 +85,6 @@ Facet.Views.FacetView = Backbone.View.extend({
     render: function() {
         switch (this.model.get('_type')) {
         case 'terms':
-            console.log(this.model.hasMissing());
-            console.log(this.model.toJSON());
             this.$el.html( ich.facetTermsTmpl(
               _.extend({ 'hasMissing?': this.model.hasMissing() }, this.model.toJSON())
             ) );
