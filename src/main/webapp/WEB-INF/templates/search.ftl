@@ -1,15 +1,15 @@
 <#include "base.ftl">
 
 <#macro subnav>
-	<div class="row-fluid">
-		<div class="subnav" id="app-header">
-			<div class="span8">
+	<div class="subnav">
+		<div class="row-fluid" id="app-header">
+			<div class="span9">
 				<form class="form-search form-inline">
 					<select class="pull-left input-medium indices"></select>
 					<div id="q" class="pull-left input-xxlarge"></div>
 				</form>
 			</div>
-			<div class="stats span4"></div>
+			<div class="stats span3"></div>
 		</div>
 	</div>
 </#macro>
