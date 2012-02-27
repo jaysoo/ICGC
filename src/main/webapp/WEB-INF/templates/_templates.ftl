@@ -41,6 +41,9 @@
 </li>
 {{/terms}}
 </ul>
+{{#hasMissing?}}
+<button class="btn btn-small disabled">more...</button>
+{{/hasMissing?}}
 <hr/>
 </script>
 
@@ -73,6 +76,7 @@
 </li>
 {{/ranges}}
 </ul>
+<button class="btn btn-small disabled">custom</button>
 <hr/>
 </script>
 

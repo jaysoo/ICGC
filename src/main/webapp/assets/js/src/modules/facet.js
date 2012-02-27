@@ -44,6 +44,10 @@ Facet.Models.Facet = Backbone.Model.extend({
         }
 
         return arr;
+    },
+
+    hasMissing: function() {
+        return this.get('missing') > 0;
     }
 });
 
@@ -67,10 +71,16 @@ Facet.Views.FacetView = Backbone.View.extend({
     render: function() {
         switch (this.model.get('_type')) {
         case 'terms':
-            this.$el.html( ich.facetTermsTmpl(this.model.toJSON()) );
+            console.log(this.model.hasMissing());
+            console.log(this.model.toJSON());
+            this.$el.html( ich.facetTermsTmpl(
+              _.extend({ 'hasMissing?': this.model.hasMissing() }, this.model.toJSON())
+            ) );
             break;
         case 'range':
-            this.$el.html( ich.facetRangeTmpl(this.model.toJSON()) );
+            this.$el.html( ich.facetRangeTmpl(
+              _.extend({ 'hasMissing?': this.model.hasMissing() }, this.model.toJSON())
+            ) );
             break;
         }
         return this;

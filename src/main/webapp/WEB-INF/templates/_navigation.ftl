@@ -14,7 +14,7 @@
 					<li class="dropdown">
 						<a class="<#if currPage == "search">active</#if> dropdown-toggle" data-toggle="dropdown" href="#search-menu">
 							Data Access
-							<b class="icon-white caret"></b>
+							<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
 							<li><a href="${PAGES_URL}search">Search documents</a></li>
