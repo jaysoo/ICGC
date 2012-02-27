@@ -3,26 +3,36 @@
       "terms": {
         "field": "chromosome",
         "all_terms": true,
-        "size": 25
+        "size": 25,
+        "exclude": [""]
       }
     },
     "mutation": {
       "terms": {
         "field": "mutation",
         "all_terms": true,
-        "size": 25
+        "size": 25,
+        "exclude": [""]
       }
     },
     "consequence_type": {
       "terms": {
         "field": "consequence_type",
         "all_terms": true,
-        "size": 20
+        "size": 20,
+        "exclude": [""]
+      }
+    },
+    "gene_affected": {
+      "terms": {
+        "field": "gene_affected",
+        "exclude": [""]
       }
     },
     "aa_mutation": {
       "terms": {
-        "field": "aa_mutation"
+        "field": "aa_mutation",
+        "exclude": [""]
       }
     },
     "chromosome_start": {
