@@ -32,6 +32,10 @@ public class PageController {
     @Inject
     @Qualifier("elasticsearch.query.facets")
     private String facets;
+    
+    @Inject
+    @Qualifier("elasticsearch.query.searchFields")
+    private String searchFields;
 
     @Inject
     @Qualifier("elasticsearch.query.template")
@@ -68,6 +72,7 @@ public class PageController {
                 .addObject("queryTemplate", queryTemplate)
                 .addObject("querySize", size)
                 .addObject("queryFacets", facets)
+                .addObject("searchFields", searchFields)
                 .addObject("documents", toStringContent(repo.search(json, null, null)));
     }
 

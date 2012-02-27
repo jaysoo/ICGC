@@ -44,7 +44,7 @@ var query = JSON.stringify({
            "chromosomes" : {
                "terms" : {
                    "field" : "chromosome",
-                   "size"  : "15"
+                   "size"  : "100"
                }
            }
        }
@@ -62,7 +62,7 @@ $.when(
     })
 )
 .then(function(json) {
-    processJSON(json, 'Top chromosomes by mutations', 'mutations');
+    processJSON(json, 'Mutation count by chromosomes', 'mutations');
 });
 })();
 
@@ -75,7 +75,7 @@ var query = JSON.stringify({
            "chromosomes" : {
                "terms" : {
                    "field" : "chromosome",
-                   "size"  : "15"
+                   "size"  : "100"
                }
            }
        }
@@ -93,7 +93,7 @@ $.when(
     })
 )
 .then(function(json) {
-    processJSON(json, 'Top chromosomes by genes', 'genes');
+    processJSON(json, 'Gene count by chromosomes', 'genes');
 });
 })();
 

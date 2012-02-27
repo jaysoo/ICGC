@@ -8,6 +8,7 @@
 <script src="${ASSETS_URL}/js/src/underscore-mixins.js"></script>
 <script src="${ASSETS_URL}/js/lib/backbone-min.js"></script>
 <script src="${ASSETS_URL}/js/lib/ICanHaz.min.js"></script>
+<script src="${ASSETS_URL}js/lib/visualsearch.js"></script>
 <script defer src="${ASSETS_URL}js/lib/bootstrap-tooltip.js"></script>
 <script defer src="${ASSETS_URL}js/lib/bootstrap-modal.js"></script>
 <script defer src="${ASSETS_URL}js/lib/bootstrap-dropdown.js"></script>

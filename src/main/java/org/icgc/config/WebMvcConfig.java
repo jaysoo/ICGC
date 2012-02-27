@@ -81,6 +81,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     public String query() throws IOException {
         return resource("/query.json");
     }
+    
+    @Bean
+    @Qualifier("elasticsearch.query.searchFields")
+    public String searchFields() throws IOException {
+        return resource("/searchFields.json");
+    }
 
     @Bean
     public LocaleResolver localeResolver() {

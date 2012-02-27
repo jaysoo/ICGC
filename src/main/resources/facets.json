@@ -1,22 +1,23 @@
  {
     "chromosome": {
       "terms": {
-        "field": "chromosome"
+        "field": "chromosome",
+        "all_terms": true,
+        "size": 25
       }
     },
     "mutation": {
       "terms": {
-        "field": "mutation"
+        "field": "mutation",
+        "all_terms": true,
+        "size": 25
       }
     },
     "consequence_type": {
       "terms": {
-        "field": "consequence_type"
-      }
-    },
-    "gene_affected": {
-      "terms": {
-        "field": "gene_affected"
+        "field": "consequence_type",
+        "all_terms": true,
+        "size": 20
       }
     },
     "aa_mutation": {

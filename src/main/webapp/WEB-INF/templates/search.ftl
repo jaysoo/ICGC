@@ -4,8 +4,7 @@
 	<div class="subnav" id="app-header">
 		<form class="form-search form-inline pull-left">
 			<select class="pull-left input-medium indices"></select>
-			<input id="q" name="q" type="text" class="pull-left input-xxlarge search-query" placeholder="Search">
-			<i title="clear search" class="close pull-left">&times;</i>
+			<div id="q" class="pull-left span10"></div>
 		</form>
 		<div class="stats pull-right"></div>
 	</div>
@@ -48,7 +47,7 @@
 
 		DCC.Indices = new Index.Models.Indices(${indices});
 		DCC.Documents = new Document.Models.Documents(DCC.hits(initialDocuments));
-		DCC.Search = new Search.Models.Search({ size: ${querySize}, count: initialDocuments.hits.total} );
+		DCC.Search = new Search.Models.Search({ size: ${querySize}, count: initialDocuments.hits.total, searchFields: ${searchFields} } );
 		DCC.Facets = new Facet.Models.Facets(DCC.facets(initialDocuments));
 
 		// Initialize main application view
