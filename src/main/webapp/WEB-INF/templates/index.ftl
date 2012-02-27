@@ -106,7 +106,7 @@ function processJSON(json, title, unit) {
                 return { label: term.term, value: term.count };
             }),
             total = json.facets[k].total,
-            $el =  $('<div id="chart-' + k + '" class="span6 chart">').appendTo($charts);
+            $el =  $('<div id="chart-' + k + '" class="span4 chart">').appendTo($charts);
 
         $el.html('<h3>' + title + '</h3><div class="chart-content"/>');
 
@@ -115,8 +115,8 @@ function processJSON(json, title, unit) {
 }
 
 function drawChart(el, total, data, unit) {
-    var w = 560,
-        h = 560,
+    var w = 370,
+        h = 370,
         textOffset = 14;
         r = Math.min(w, h) / 2 - 50,
         ir = r * .6,
@@ -193,6 +193,7 @@ function drawChart(el, total, data, unit) {
       lines.exit().remove();
 
       valueLabels = labelGroup.selectAll("text.value").data(pieData)
+        .attr("class", "chart-label-mini")
         .attr("dy", function(d){
           if ((d.startAngle+d.endAngle)/2 > Math.PI/2 && (d.startAngle+d.endAngle)/2 < Math.PI*1.5 ) {
             return 5;
