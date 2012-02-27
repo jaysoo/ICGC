@@ -9,10 +9,10 @@
 			<a class="brand" href="${SITE_URL}">${SITE_NAME}</a>
 			<nav class="nav-collapse">
 				<ul class="nav">
-					<li <#if currPage == "index">active</#if>"><a href="${PAGES_URL}">Overview</a></li>
+					<li class="<#if currPage == "index">active</#if>"><a href="${PAGES_URL}">Overview</a></li>
 					</li>
-					<li class="dropdown">
-						<a class="<#if currPage == "search">active</#if> dropdown-toggle" data-toggle="dropdown" href="#search-menu">
+					<li class="<#if currPage == "search">active</#if> dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#search-menu">
 							Data Access
 							<b class="caret"></b>
 						</a>
