@@ -19,6 +19,10 @@ Search.Views.SearchView = Backbone.View.extend({
 
     matchAll: { match_all: {} },
 
+    events: {
+        'change': 'search'
+    },
+
     initialize: function(options) {
         options = options || {};
 
