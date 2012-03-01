@@ -4,6 +4,11 @@
 
 Facet.Models.Facet = Backbone.Model.extend({
     defaults: { values: null },
+    
+    initialize: function() {
+      var facetModel = DCC.queryFacets[this.id];
+      this.set('nested', facetModel.nested || null);
+    },
 
     /*
      * Generates one or more filters from this facet.
@@ -26,7 +31,19 @@ Facet.Models.Facet = Backbone.Model.extend({
                     terms.push(value);
                 });
                 field[that.id] = terms;
-                arr.push({ terms: field });
+                if(that.get('nested')) {
+                  var nested = that.get('nested');
+                  arr.push({ 
+                    nested: { 
+                      path : nested, 
+                      query: { 
+                        terms : field 
+                      } 
+                    }
+                  });
+                } else {
+                  arr.push({ terms: field });
+                }
             })();
             break;
 
@@ -48,7 +65,7 @@ Facet.Models.Facet = Backbone.Model.extend({
 
     hasMissing: function() {
         return this.get('missing') > 0;
-    }
+    }    
 });
 
 Facet.Models.Facets = Backbone.Collection.extend({
