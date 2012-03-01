@@ -61,7 +61,7 @@ Search.Views.SearchView = Backbone.View.extend({
 
     // Fetch the available query facets
     facetMatches : function(callback) {
-      callback(this.model.get('searchFields'));
+      callback(_.keys(this.model.get('searchFields')));
     },
 
     // Fetch the values for a particular query facet
@@ -69,6 +69,7 @@ Search.Views.SearchView = Backbone.View.extend({
       var index = this.model.get('index') || '',
           type = this.model.get('type') || '';
 
+      // TODO: we need to exclude the facet _currently_ being edited, not all the ones of the same type
       var payload = {
           query: this.buildQuery({exclude:facet}),
           size: 0,
@@ -84,6 +85,12 @@ Search.Views.SearchView = Backbone.View.extend({
           }
       };
 
+      var facetModel = this.model.get('searchFields')[facet];
+      var nested = facetModel ? facetModel.nested : null;
+      if(nested) {
+        payload.facets.the_facet.nested = nested;
+      }
+
       $.when(
         $.ajax({
           url: '/api/search',
@@ -96,9 +103,11 @@ Search.Views.SearchView = Backbone.View.extend({
       )
       .then(function(response) {
         var values = [];
-        _.map(response.facets.the_facet.terms, function(t) {
+        _.each(response.facets.the_facet.terms, function(t) {
           values.push(t.term);
         });
+        // TODO: use proper option name when pull request merged:
+        // https://github.com/documentcloud/visualsearch/pull/44
         callback(values, {preserveMatches:true});
       })
       .fail(this.onError);
@@ -121,25 +130,42 @@ Search.Views.SearchView = Backbone.View.extend({
           return item.get('category') == options.exclude;
         });
       }
-
+      var that = this;
       var query;
       if(search && search.length > 0) {
-        var q = search.map(function(queryTerm) {
-          switch(queryTerm.get('category')) {
+        var nestedQueries = {};
+        query = search.reduce(function(query, queryTerm) {
+          var facet = queryTerm.get('category');
+          var facetModel = that.model.get('searchFields')[facet];
+          var nested = facetModel ? facetModel.nested : null;
+
+          var mustClause = query.bool.must;
+          // Add the clause to the parent query or a nested query
+          if(nested) {
+            if(!nestedQueries[nested]) {
+              // create the nested clause
+              nestedQueries[nested] = {nested:{path:nested, query:{ bool: { must: [] }}}};
+              query.bool.must.push(nestedQueries[nested]);
+            }
+            mustClause = nestedQueries[nested].nested.query.bool.must;
+          }
+          switch(facet) {
           // special case for full-text search
           case 'text':
-            return {query_string : {query: queryTerm.get('value')}};
+            mustClause.push({query_string : {query: queryTerm.get('value')}});
+            break;
           default:
             var term = {};
-            term[queryTerm.get('category')] = queryTerm.get('value');
-            return {term:term};
+            term[facet] = queryTerm.get('value');
+            mustClause.push({term:term});
           }
-        });
-        query = {bool : {must : q}};
+          return query;
+        }, {bool: {must: []}});
+        
       } else {
         query = this.matchAll;
       }
-      
+
       var filters = [];
       this.collection.each(function(model) {
           filters = filters.concat(model.filters());
