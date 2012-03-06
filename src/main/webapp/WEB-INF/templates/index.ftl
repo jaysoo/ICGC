@@ -3,6 +3,12 @@
 <#macro page_content>
   <div id="charts" class="row">
       <div class="span4">
+        <div class="well">
+            <h2>Data access</h2>
+            <ul>
+                <li><a href="${PAGES_URL}search">Search documents</a></li>
+            </ul>
+        </div>
         <div id="stats" class="hero-unit  well">
             <h1>Statistics</h1>
             <h2>Total documents</h2>
@@ -14,12 +20,6 @@
               <dt>Donors</dt>
               <dd>${donorTotal}</dd>
             </dl>
-        </div>
-        <div class="well">
-            <h2>Data access</h2>
-            <ul>
-                <li><a href="${PAGES_URL}search">Search documents</a></li>
-            </ul>
         </div>
     </div>
   </div>

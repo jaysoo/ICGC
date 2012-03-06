@@ -23,7 +23,7 @@
   <#include "_navigation.ftl">
 
   <div id="main">
-    <div class="container-fluid">
+    <div class="container">
 			<@subnav/>
       <div class="content">
         <@page_content/>
